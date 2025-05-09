@@ -1,0 +1,192 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@using Microsoft.AspNetCore.Identity
+@using StoreOn.Models
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@model matjerZaid.Models.Data.Podects;
+
+@{
+    var appUser = await UserManager.GetUserAsync(User);
+    var phoneNumber = appUser != null ? await UserManager.GetPhoneNumberAsync(appUser) : "No phone number";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/8.2.0/mdb.min.css" rel="stylesheet" />
+
+</head>
+<body>
+    <!-- Bootstrap container to match your page style -->
+    <div class="container my-4">
+        <div class="row align-items-stretch justify-content-around g-3">
+
+            <!-- Admin Info Card -->
+            <div class="col-md-4 col-lg-3">
+                <div class="card  border-0 shadow  h-100">
+                    <div class="card-header badge badge-info rounded d-flex align-items-center ">
+                        <i class="bi bi-person-badge-fill me-2 fs-5"></i>
+                        <h6 class="">Admin Info</h6>
+                    </div>
+                    <div class="card-body py-2 px-3">
+                        <div class="d-flex flex-column gap-1 small">
+                            <div><strong><i class="bi bi-person-fill me-2 text-info-emphasis"></i>Admin: </strong>@UserManager.GetUserName(User)</div>
+                            <div><strong><i class="bi bi-fingerprint me-2 text-info-emphasis"></i>ID:</strong>@UserManager.GetUserId(User)</div>
+                            <div><strong><i class="bi bi-telephone-fill me-2 text-info-emphasis"></i>Phone:</strong> @phoneNumber</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page Title -->
+            <div class="col-md-8 col-lg-8">
+                <div class="card border-0 shadow h-100 ">
+                    <div class="card-body d-flex flex-column justify-content-center text-center">
+                        <h2 class="fw-semibold mb-2 text-info-emphasis" style="font-size: 1.8rem;">
+                            ✏️ Product Editing Page
+                        </h2>
+                        <p class="text-info-emphasis small mb-0">
+                            "Update product info, prices, stock and more – all in one place!"
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+    <!--form add prodec-->
+    <form asp-action="UpdateSave">
+        <div class="container my-3">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Edit Product</h4>
+                </div>
+                <div class="card-body">
+
+                    <!-- General Info -->
+                    <h5 class="mb-3">General Information</h5>
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label for="productName" class="form-label">Product Name</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-tag"></i></span>
+                                <input type="text" id="productName" asp-for="Name" class="form-control" placeholder="Enter product name" />
+                            </div>
+                            <span asp-validation-for="Name" class="text-neutral-50 text-danger"></span>
+
+                        </div>
+                        <div class="col-md-6">
+                            <label for="productCode" class="form-label">Product Code (SKU)</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-barcode"></i></span>
+                                <input type="text" id="productCode" class="form-control" asp-for="Sku" disabled placeholder="e.g. P-00123" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Description -->
+                    <h5 class="mb-3 mt-3">Product Description</h5>
+                    <label for="description" class="form-label">Description</label>
+                    <textarea id="description" class="form-control mb-2" rows="4" asp-for="Description" placeholder="Write a brief description..."></textarea>
+                    <span asp-validation-for="Description" class="text-neutral-50 text-danger"></span>
+
+                    <!-- Upload Images 
+                    <h5 class="mb-3 mt-3">Upload Images</h5>
+                    <label for="images" class="form-label">Select Images</label>
+                    <input type="file" id="Images" name="Images" class="form-control mb-2" multiple />
+                    <span id="imageError" class="text-danger"></span>
+                    -->
+                    <!-- Price & Stock -->
+                    <h5 class="mb-3 mt-3">Price & Stock</h5>
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label for="price" class="form-label">Price ($)</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
+                                <input type="number" id="price" asp-for="Price" class="form-control" placeholder="e.g. 99.99" />
+
+                            </div>
+                            <span asp-validation-for="Price" class="text-neutral-50 text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="stock" class="form-label">Stock Quantity</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-boxes"></i></span>
+                                <input type="number" id="stock" asp-for="Stock" class="form-control" placeholder="e.g. 100" />
+                            </div>
+                            <span asp-validation-for="Stock" class="text-neutral-50 text-danger"></span>
+                        </div>
+                    </div>
+
+                    <!-- Category & Discount -->
+                    <h5 class="mb-3">Category & Discount</h5>
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label for="category" class="form-label">Category</label>
+                            <select id="category" class="form-select" asp-for="CategoryId" asp-items="@(new SelectList(ViewBag.catagory,"CategoryId","Name"))">
+                                <option value="" selected="selected">Plese Select</option>
+                            </select>
+                            <span asp-validation-for="CategoryId" class="text-neutral-50 text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="discountPrice" class="form-label">Discount Price ($)</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-percent"></i></span>
+                                <input type="number" id="discountPrice" asp-for="DiscountPrice" class="form-control" placeholder="e.g. 79.99" />
+                            </div>
+                            <span asp-validation-for="DiscountPrice" class="text-neutral-50 text-danger"></span>
+                        </div>
+                    </div>
+
+                    <!-- Status -->
+                    <h5 class="mb-3">Product Status</h5>
+                    <div class="mb-2">
+                        <label for="status" class="form-label">Status</label>
+                        <select id="status" class="form-select" asp-for="StatusId" asp-items="@(new SelectList(ViewBag.prodectstuts,"StatusId","Name"))">
+                            <option value="" selected="selected">Plese Select</option>
+                        </select>
+                    </div>
+                    <span asp-validation-for="StatusId" class="text-neutral-50 text-danger"></span>
+                    <!-- Submit Button -->
+                    <div class="text-end">
+                        <input type="hidden" asp-for="ProductId" />
+                        <input type="submit" name="name" class="btn btn-primary" value="Update Prodect " />
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </form>
+    <!--
+    <script>
+        function validateImages() {
+            const input = document.getElementById("Images");
+            const error = document.getElementById("imageError");
+
+            if (!input.files || input.files.length === 0) {
+                error.textContent = "🚫 Please select at least one image before submitting.";
+                return false; // يمنع الإرسال
+            }
+
+            error.textContent = ""; // في حال كان في بيانات، نظف الرسالة
+            return true;
+        }
+    </script>
+    -->
+</body>
+
+@section Scripts
+{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+</html>
+

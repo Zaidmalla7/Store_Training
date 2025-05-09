@@ -1,0 +1,89 @@
+﻿@page
+@model LoginModel
+
+@{
+    ViewData["Title"] = "Log in";
+}
+
+
+
+    <!-- Section: Design Block -->
+    <section class="">
+        <!-- Jumbotron -->
+        <div class="px-4 py-5 px-md-5 text-center text-lg-start" style="background-color: hsl(0, 0%, 96%)">
+            <div class="container">
+                <div class="row gx-lg-5 align-items-center">
+                    <div class="col-lg-6 mb-5 mb-lg-0">
+                        <h1 class="my-5 display-3 fw-bold ls-tight">
+                            The best offer <br />
+                            <span class="text-primary">for your business</span>
+                        </h1>
+                        <p style="color: hsl(217, 10%, 50.8%)">
+                            Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                            Eveniet, itaque accusantium odio, soluta, corrupti aliquam
+                            quibusdam tempora at cupiditate quis eum maiores libero
+                            veritatis? Dicta facilis sint aliquid ipsum atque?
+                        </p>
+                    </div>
+
+                    <div class="col-lg-6 mb-5 mb-lg-0">
+                        <div class="card">
+                            <div class="card-body py-5 px-md-5">
+                                <form id="account" method="post">
+                                    <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+                                    <!-- Email input -->
+                                    <div class="form-floating mb-3">
+                                        <input asp-for="Input.Email" class="form-control" />
+                                        <label asp-for="Input.Email">Email</label>
+                                        <span asp-validation-for="Input.Email" class="text-danger"></span>
+                                    </div>
+
+                                    <!-- Password input -->
+                                    <div class="form-floating mb-3">
+                                        <input asp-for="Input.Password" class="form-control" />
+                                        <label asp-for="Input.Password">Password</label>
+                                        <span asp-validation-for="Input.Password" class="text-danger"></span>
+                                    </div>
+
+                                    <!-- Checkbox -->
+                                    <div class="checkbox mb-3">
+                                        <label asp-for="Input.RememberMe" class="form-label">
+                                            <input class="form-check-input" asp-for="Input.RememberMe" />
+                                            @Html.DisplayNameFor(m => m.Input.RememberMe)
+                                        </label>
+                                    </div>
+
+                                    <!-- Submit button -->
+                                   
+                                <div class="row">
+                                    <div class="offset-sm-4 col-sm-4 d-grid mb-sm-2">
+                                        <button id="login-submit" type="submit" class="btn btn-primary ">Login</button>
+                                    </div>
+                                    <div class="col-sm-4 d-grid mb-sm-2">
+                                        <a class="btn btn-outline-primary mt-1" href="/" role="button">Cancel</a>
+                                    </div>
+                                </div>
+
+                                    <!-- Register buttons -->
+                                    <div class="mt-2">
+                                        <p>
+                                            <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
+                                        </p>
+                                        <p>
+                                            <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a>
+                                        </p>
+                                        <p>
+                                            <a id="resend-confirmation" asp-page="./ResendEmailConfirmation">Resend email confirmation</a>
+                                        </p>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Jumbotron -->
+    </section>
+    <!-- Section: Design Block -->

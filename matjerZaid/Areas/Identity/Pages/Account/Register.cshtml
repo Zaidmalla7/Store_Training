@@ -1,0 +1,128 @@
+﻿@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+
+
+
+
+
+<!-- Section: Design Block -->
+<section class="">
+    <!-- Jumbotron -->
+    <div class="px-4 py-5 px-md-5 text-center text-lg-start" style="background-color: hsl(0, 0%, 96%)">
+        <div class="container">
+            <div class="row gx-lg-5 align-items-center">
+                <div class="col-lg-6 mb-5 mb-lg-0">
+                    <h1 class="my-5 display-3 fw-bold ls-tight">
+                        The best offer <br />
+                        <span class="text-primary">for your business</span>
+                    </h1>
+                    <p style="color: hsl(217, 10%, 50.8%)">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                        Eveniet, itaque accusantium odio, soluta, corrupti aliquam
+                        quibusdam tempora at cupiditate quis eum maiores libero
+                        veritatis? Dicta facilis sint aliquid ipsum atque?
+                    </p>
+                </div>
+
+                <div class="col-lg-6 mb-5 mb-lg-0">
+                    <div class="card">
+                        <div class="card-body py-5 px-md-5">
+                            <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+                                <!-- 2 column grid layout with text inputs for the first and last names -->
+                                <div class="row">
+                                    <div class="col-md-6 mb-4">
+                                        <div class="form-floating">
+                                            <input asp-for="Input.FirstName" class="form-control" />
+                                            <label asp-for="Input.FirstName">First Name</label>
+                                            <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-4">
+                                        <div class="form-floating">
+                                            <input asp-for="Input.LastName" class="form-control" />
+                                            <label asp-for="Input.LastName">Last Name</label>
+                                            <span asp-validation-for="Input.LastName" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Email input -->
+                                <div class="form-floating mb-3">
+                                    <input asp-for="Input.Email" class="form-control" />
+                                    <label asp-for="Input.Email">Email</label>
+                                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                                </div>
+
+                                <!-- Password input -->
+                                <div class="form-floating mb-3">
+                                    <input asp-for="Input.Password" class="form-control" />
+                                    <label asp-for="Input.Password">Password</label>
+                                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                                </div>
+
+                                <!-- ConfirmPassword input -->
+                                <div class="form-floating mb-3">
+                                    <input asp-for="Input.ConfirmPassword" class="form-control" />
+                                    <label asp-for="Input.ConfirmPassword">Confirm Password</label>
+                                    <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                                </div>
+
+                                <!-- PhoneNumber input -->
+                                <div class="form-floating  mb-3">
+                                    <input asp-for="Input.PhoneNumber" class="form-control" />
+                                    <label asp-for="Input.PhoneNumber">PhoneNumber</label>
+                                    <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+                                </div>
+
+                                <!-- Address input -->
+                                <div class="form-floating  mb-3">
+                                    <input asp-for="Input.Address" class="form-control" />
+                                    <label asp-for="Input.Address">Address</label>
+                                    <span asp-validation-for="Input.Address" class="text-danger"></span>
+                                </div>
+                                <!-- login and Cansel button -->
+                                <div class="row">
+                                    <div class="offset-sm-4 col-sm-4 d-grid mb-sm-2">
+                                        <button type="submit" class="btn btn-primary ">Login</button>
+                                    </div>
+                                    <div class="col-sm-4 d-grid mb-sm-2">
+                                        <a class="btn btn-outline-primary mt-1" href="/" role="button">Cancel</a>
+                                    </div>
+                                </div>
+
+
+                                <!-- Register buttons -->
+                                <div class="text-center">
+                                    <p>or sign up with:</p>
+                                    <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-link btn-floating mx-1">
+                                        <i class="fab fa-facebook-f"></i>
+                                    </button>
+
+                                    <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-link btn-floating mx-1">
+                                        <i class="fab fa-google"></i>
+                                    </button>
+
+                                    <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-link btn-floating mx-1">
+                                        <i class="fab fa-twitter"></i>
+                                    </button>
+
+                                    <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-link btn-floating mx-1">
+                                        <i class="fab fa-github"></i>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Jumbotron -->
+</section>
+<!-- Section: Design Block -->
