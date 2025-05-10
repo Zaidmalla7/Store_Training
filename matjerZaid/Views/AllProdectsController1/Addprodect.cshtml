@@ -104,10 +104,10 @@
                     <input type="file" id="Images" name="Images" class="form-control mb-2" multiple />
                     <span id="imageError" class="text-danger"></span>
 
-                <!-- Price & Stock -->
+                    <!-- Price & Stock & MinimumStock-->
                 <h5 class="mb-3 mt-3">Price & Stock</h5>
                 <div class="row mb-4">
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <label for="price" class="form-label">Price ($)</label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
@@ -116,13 +116,20 @@
                         </div>
                             <span asp-validation-for="Price" class="text-neutral-50 text-danger"></span>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <label for="stock" class="form-label">Stock Quantity</label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="fas fa-boxes"></i></span>
                             <input type="number" id="stock" disabled asp-for="Stock" class="form-control" placeholder="e.g. 100" />
                         </div>
                     </div>
+                        <div class="col-md-4">
+                            <label for="stock" class="form-label">Minimum Stock</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-boxes"></i></span>
+                                <input type="number" id="mini" disabled asp-for="MinimumStock" class="form-control" placeholder="e.g. 100" />
+                            </div>
+                        </div>
                 </div>
                     <!-- Auto Create Inventory Toggle -->
                     <div class="form-check mb-4 p-3 rounded border border-success bg-light">
@@ -187,9 +194,11 @@
             return true;
         }
               const stockButton = document.getElementById("stock");
+              const MinimumStock = document.getElementById("mini")
         const autoCheckbox = document.getElementById("auto");
         autoCheckbox.addEventListener("change", function () {
             stockButton.disabled = !autoCheckbox.checked;
+            MinimumStock.disabled = !autoCheckbox.checked;
         });
        
     </script>

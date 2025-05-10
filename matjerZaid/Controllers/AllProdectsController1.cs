@@ -3,6 +3,7 @@ using matjerZaid.Models.Data;
 using matjerZaid.Models.Database;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace matjerZaid.Controllers
 {
@@ -96,15 +97,41 @@ namespace matjerZaid.Controllers
             objAdd.Sku = "PRD-" + Guid.NewGuid().ToString().Substring(0, 8).ToUpper() + "-" + newProductId;
             await _context.SaveChangesAsync();
 
+            //و كود انشاء  سجل في جدول الحركات لما ينعمل المنتج في حال الادمن اختار ينشئو يدوي
             //كود انشاء سجل في جدول المخزون في حال الادمن اختار ينشئو يدوي
             bool autoCheckbox = podects.AutoCreateInventory;
             matjerZaid.Models.Database.Inventory inv = new Models.Database.Inventory();
-            if(autoCheckbox == true)
+            matjerZaid.Models.Database.Inventorymovement type = new Models.Database.Inventorymovement();
+            //التحقق من اختيار الادمن 
+            if (autoCheckbox == true)
             {
+                //كود سجل المخزون
                 inv.ProductId = objAdd.ProductId;
                 inv.Quantity  = podects.Stock ?? 0;
                 inv.StatusId = podects.StatusId ?? 0;
+                inv.CreatedAt = DateOnly.FromDateTime(DateTime.Now);
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+                if (userIdClaim != null)
+                {
+                    inv.UpdatedBy = userIdClaim.Value;
+                }
+
+                inv.MinimumStock = podects.MinimumStock ?? 1;
+                inv.Note = "Auto-created by system on product creation";
                 _context.Inventories.Add(inv);
+                await _context.SaveChangesAsync();
+
+                //كود سجل الحركات
+                type.productId = objAdd.ProductId;
+                type.quantity = podects.Stock ?? 0;
+                type.note = "Initial stock entry on product creation";
+                type.movementType = "in";
+                type.createdAt = DateOnly.FromDateTime(DateTime.Now);
+                if (userIdClaim != null)
+                {
+                    type.createdBy = userIdClaim.Value;
+                }
+                _context.inventorymovements.Add(type);
                 await _context.SaveChangesAsync();
             }
 

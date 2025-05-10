@@ -38,7 +38,9 @@ namespace matjerZaid.Models.Data
         public string? ImageUrl { get; set; } = null!;
         public bool AutoCreateInventory { get; set; }
 
+        public string? AdminName { get; set; }
 
+        public int? MinimumStock { get; set; }
 
 
     }
