@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using StoreOn.Models;
 
-namespace matjerZaid.Areas.Identity.Pages.Account.Manage
+namespace ECApp.Areas.Identity.Pages.Account.Manage
 {
     public class EmailModel : PageModel
     {

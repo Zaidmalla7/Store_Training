@@ -1,6 +1,6 @@
 ﻿using StoreOn.Models;
 
-namespace matjerZaid.Models.Database
+namespace ECApp.Model.Database
 {
     public class Inventory
     {
@@ -10,7 +10,7 @@ namespace matjerZaid.Models.Database
 
         public int Quantity { get; set; }
 
-        public DateOnly UpdatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
 
         public int StatusId { get; set; }
         public DateOnly CreatedAt { get; set; }

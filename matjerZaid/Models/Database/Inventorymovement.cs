@@ -1,7 +1,7 @@
 ﻿using StoreOn.Models;
 using System.ComponentModel.DataAnnotations;
 
-namespace matjerZaid.Models.Database
+namespace ECApp.Model.Database
 {
     public class Inventorymovement
     {

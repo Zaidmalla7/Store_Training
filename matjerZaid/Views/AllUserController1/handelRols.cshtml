@@ -1,0 +1,63 @@
+﻿@model ECApp.Model.Data.Rols
+@{
+    Layout = "_Layoutsystem";
+}
+<div class="ms-5 me-5 py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-7">
+
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+                <!-- Header -->
+                <div class="bg-primary bg-gradient text-white p-4">
+                    <h4 class="mb-0">
+                        <i class="bi bi-shield-lock me-2"></i> Assign Role to User
+                    </h4>
+                    <small class="text-light">Manage user permissions with ease</small>
+                </div>
+
+                <!-- Body -->
+                <div class="card-body bg-light p-4">
+                    <form asp-action="SaveRole" method="post">
+                        <input type="hidden" name="Id" value="@Model.Id" />
+
+                        <!-- Username (readonly or display only) -->
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold text-secondary">Username</label>
+                            <div class="form-control bg-white border-0 shadow-sm">
+                                @Model.Name <!-- افترضنا فيه خاصية اسم -->
+                            </div>
+                        </div>
+
+                        <!-- Roles -->
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold text-secondary">Select Role</label>
+                            <div class="d-flex flex-column gap-2 mt-2">
+
+                                @foreach (var role in new[] { "Admin", "Sales", "Client" })
+                                {
+                                    <div class="form-check form-check-lg ps-4">
+                                        <input class="form-check-input" type="radio" name="SelectedRole" value="@role"
+                                               id="@role" @(Model.roleNames == role ? "checked" : "") />
+                                        <label class="form-check-label ms-2" for="@role">@role</label>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="javascript:history.back()" class="btn btn-outline-dark rounded-pill px-4">
+                                <i class="bi bi-arrow-left-circle"></i> Back
+                            </a>
+                            <button type="submit" class="btn btn-primary rounded-pill px-4 shadow-sm">
+                                <i class="bi bi-check-circle-fill me-1"></i> Save Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>

@@ -46,3 +46,19 @@ button.accept-policy {
   white-space: nowrap;
   line-height: 60px;
 }
+.hover-glow:hover {
+    color: #ffd6a5 !important;
+    transform: scale(1.1);
+    transition: 0.3s ease;
+}
+
+.hover-link:hover {
+    color: #fcd34d !important;
+    transition: 0.3s;
+}
+
+.hover-glow:hover {
+    color: #fcd34d !important;
+    transform: scale(1.2);
+    transition: 0.3s ease;
+}

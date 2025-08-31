@@ -3,11 +3,14 @@
 *@
 @{
 }
+@{
+    Layout = "_Layoutsystem";
+}
 @using Microsoft.AspNetCore.Identity
 @using StoreOn.Models
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
-@model matjerZaid.Models.Data.Podects;
+@model ECApp.Model.Data.Podects;
 
 @{
     var appUser = await UserManager.GetUserAsync(User);
@@ -19,15 +22,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title></title>
-      <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/8.2.0/mdb.min.css" rel="stylesheet" />
-
+    <!-- Swiper CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 </head>
 <body>
     <!-- Bootstrap container to match your page style -->
-    <div class="container my-4">
+    <div class="ms-5 me-5">
+    <div class=" my-4">
         <div class="row align-items-stretch justify-content-around g-3">
 
-            <!-- Admin Info Card -->
+            <!-- Admin Info Card 
             <div class="col-md-4 col-lg-3">
                 <div class="card  border-0 shadow  h-100">
                     <div class="card-header badge badge-info rounded d-flex align-items-center ">
@@ -43,9 +49,9 @@
                     </div>
                 </div>
             </div>
-
+            -->
             <!-- Page Title -->
-            <div class="col-md-8 col-lg-8">
+            <div class="col-md-12 col-lg-12">
                 <div class="card border-0 shadow h-100 ">
                     <div class="card-body d-flex flex-column justify-content-center text-center">
                         <h2 class="fw-semibold mb-2 text-info-emphasis" style="font-size: 1.8rem;">
@@ -63,8 +69,8 @@
         </div>
     </div>
    <!--form add prodec-->
-    <form asp-action="save" method="post" enctype="multipart/form-data" onsubmit="return validateImages()">
-    <div class="container my-3">
+    <form asp-action="save" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
+        <div class=" my-3">
         <div class="card shadow">
             <div class="card-header bg-primary text-white">
                 <h4 class="mb-0">Add New Product</h4>
@@ -103,7 +109,7 @@
                 <label for="images" class="form-label">Select Images</label>
                     <input type="file" id="Images" name="Images" class="form-control mb-2" multiple />
                     <span id="imageError" class="text-danger"></span>
-
+                    
                     <!-- Price & Stock & MinimumStock-->
                 <h5 class="mb-3 mt-3">Price & Stock</h5>
                 <div class="row mb-4">
@@ -120,20 +126,24 @@
                         <label for="stock" class="form-label">Stock Quantity</label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="fas fa-boxes"></i></span>
-                            <input type="number" id="stock" disabled asp-for="Stock" class="form-control" placeholder="e.g. 100" />
+                            <input type="number" id="stock" disabled asp-for="Stock" class="form-control mb-2" placeholder="e.g. 100" />
                         </div>
+                            <span id="Error" class="text-danger"></span>
+
                     </div>
                         <div class="col-md-4">
                             <label for="stock" class="form-label">Minimum Stock</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="fas fa-boxes"></i></span>
-                                <input type="number" id="mini" disabled asp-for="MinimumStock" class="form-control" placeholder="e.g. 100" />
+                                <input type="number" id="mini"  disabled asp-for="MinimumStock" class="form-control" placeholder="e.g. 100" />
                             </div>
+                            <span id="Error2" class="text-danger"></span>
+
                         </div>
                 </div>
                     <!-- Auto Create Inventory Toggle -->
                     <div class="form-check mb-4 p-3 rounded border border-success bg-light">
-                        <input class="form-check-input" onclick="checkAuto()" id="auto" type="checkbox" asp-for="AutoCreateInventory" />
+                        <input class="form-check-input"  id="auto" type="checkbox" asp-for="AutoCreateInventory" />
                         <label class="form-check-label fw-bold text-success" asp-for="AutoCreateInventory">
                             <i class="fas fa-magic me-1"></i> Auto Create Stock Record
                         </label>
@@ -180,10 +190,15 @@
         </div>
     </div>
     </form>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script>
         function validateImages() {
             const input = document.getElementById("Images");
             const error = document.getElementById("imageError");
+            var isValid1;
+            var isValid2;
 
             if (!input.files || input.files.length === 0) {
                 error.textContent = "🚫 Please select at least one image before submitting.";
@@ -193,6 +208,56 @@
             error.textContent = ""; // في حال كان في بيانات، نظف الرسالة
             return true;
         }
+        function validateStockMinimumStock(){
+            const input1  = document.getElementById("stock");
+            const input2 = document.getElementById("mini");
+                        const error = document.getElementById("Error");
+                         const error2 = document.getElementById("Error2");
+
+
+           if(input1.disabled == false && input1.value.length === 0){
+                               error.textContent = "This filed is required";
+                              isValid1 = false;
+           } 
+           else{isValid1=true;}
+
+
+            if(input2.disabled == false && input2.value.length === 0){
+                 error2.textContent = "This filed is required";
+                               isValid2 = false;
+           }
+           else{
+           isValid2 = true;
+           }
+          
+
+            if(isValid1== true){
+                        error.textContent = "";
+            }
+            if(isValid2 == true){error2.textContent ="";}
+           if(isValid1 == true && isValid2==true)
+           {
+               return true;
+           }
+           else{return false}
+
+         
+
+        }
+                function validateForm() {
+             const imagesValid = validateImages();
+
+        // نجيب حالة الـ checkbox
+        const autoCheckbox = document.getElementById("auto");
+
+        let stockValid = true;
+        if (autoCheckbox.checked) {
+            stockValid = validateStockMinimumStock();
+        }
+
+        return imagesValid && stockValid;
+        }
+
               const stockButton = document.getElementById("stock");
               const MinimumStock = document.getElementById("mini")
         const autoCheckbox = document.getElementById("auto");
@@ -200,6 +265,7 @@
             stockButton.disabled = !autoCheckbox.checked;
             MinimumStock.disabled = !autoCheckbox.checked;
         });
+
        
     </script>
   

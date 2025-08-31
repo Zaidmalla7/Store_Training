@@ -1,4 +1,4 @@
-﻿namespace matjerZaid.Models.Data
+﻿namespace ECApp.Model.Data
 {
     public class AllUser
     {

@@ -4,7 +4,7 @@
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
-namespace matjerZaid.Migrations
+namespace ECApp.Migrations
 {
     /// <inheritdoc />
     public partial class IdentityRols : Migration

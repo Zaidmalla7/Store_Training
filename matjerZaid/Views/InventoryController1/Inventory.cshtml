@@ -1,0 +1,476 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@{
+    Layout = "_Layoutsystem";
+}
+@model List<ECApp.Model.Data.Inventory1>
+@{
+    var allinventory= Model.Count();
+}
+<style>
+    /* إلغاء أي خلفية أو ظل حوالين أزرار DataTables */
+    div.dt-buttons {
+        background: transparent !important;
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
+    }
+
+    /* نفس الشي للزر نفسه */
+    .dt-buttons .btn {
+        background-color: transparent !important;
+        box-shadow: none !important;
+    }
+
+</style>
+
+<div class="ms-5 me-5">
+<div class=" my-2">
+    <div class="row align-items-stretch justify-content-around g-3">
+
+    
+        <!-- Page Title -->
+        <div class="col-md-12 col-lg-12">
+            <div class="card border-0 shadow h-100">
+                <div class="card-body d-flex flex-column justify-content-center text-center">
+                    <h2 class="fw-semibold mb-2 text-warning" style="font-size: 1.8rem;">
+                        <i class="bi bi-box-seam-fill me-2 text-warning"></i>
+                        Inventory Management Panel
+                    </h2>
+                    <p class="text-warning-emphasis small mb-0">
+                        Track product quantities, manage stock levels, and control inventory movements — all in one smart dashboard.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <div class="">
+        <div class="p-5 bg-white shadow-lg rounded-4 border-start border-5 border-dark position-relative overflow-hidden">
+
+            <!-- Light Iconic Background -->
+            <div class="position-absolute top-0 end-0 mt-4 me-4 opacity-10" style="font-size: 6rem;">
+                <i class="bi bi-boxes text-dark"></i>
+            </div>
+
+            <!-- Title -->
+            <h1 class="fw-bold text-dark mb-3">
+                <i class="bi bi-layers-fill me-2 text-secondary"></i> Inventory Management System
+            </h1>
+
+            <!-- Short Description -->
+            <p class="text-secondary fs-5 mb-2">
+                A powerful platform for managing inventory with accuracy and ease.
+            </p>
+
+            <!-- Detailed Explanation -->
+            <p class="text-muted fs-6 mb-2">
+                Track stock levels in real time, manage product data, and streamline your supply operations. This system gives you full visibility and control over your inventory lifecycle.
+            </p>
+
+            <p class="text-muted fs-6 mb-4">
+                Built with intuitive design and enterprise-level performance to help your business scale smoothly.
+            </p>
+
+            <!-- Call-to-Action Button -->
+            <a href="#2" class="btn btn-dark px-4 py-2 rounded-pill shadow-sm fw-semibold">
+                Go to Inventory Dashboard 🚀
+            </a>
+        </div>
+    </div>
+
+    <!--table podect-->
+    <div class="mb-4 mt-2" id="2">
+        <div class="card shadow">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <!-- Total Products -->
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="bg-white rounded-circle d-flex justify-content-center align-items-center shadow-sm" style="width: 50px; height: 50px;">
+                            <i class="bi bi-box-seam-fill fs-4 text-info"></i>
+                        </div>
+                        <div>
+                            <div class="text-muted small">Total Products</div>
+                            <div class="fs-4 fw-semibold text-dark">@allinventory</div>
+                        </div>
+                    </div>
+                    <div>
+                        <a class="btn btn-success shadow-sm" asp-action="Addprodect" asp-controller="AllProdectsController1">
+                            <i class="bi bi-plus-circle me-1"></i> Add New Product
+                        </a>
+                    </div>
+                </div>
+                <div id="alertPlaceholder" class="my-3"></div>
+
+
+                <!--  تنبيه من Bootstrap -->
+                <div id="alertPlaceholder" class="my-3"></div>
+                <div class="table-responsive-sm table-responsive-md " style="">
+                    <table id="productTable" class="table  table-responsive table-hover table-striped table-sm table-centered mb-0">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>ID</th>
+                                <th>ProductId</th>
+                                <th>Quantity</th>
+                                <th>Status</th>
+                                <th>Note</th>
+                                <th>UpdatedByAdmin</th>
+                                <th>MinimumStock</th>
+                                <th>UpdatedAt</th>
+                                <th>Created At</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var pro in Model.Select((item, index) => new { item, index }))
+                            {
+                                <tr>
+                                    <td>@(pro.index + 1)</td>
+                                    <td>@(pro.item.InventoryId)</td>
+                                    <td>@(pro.item.ProductId)</td>
+                                    <td>@(pro.item.Quantity)</td>
+                                    <td>
+                                        <span class="badge rounded-pill d-inline @(pro.item.StatusName == "Available" ? "badge-success" : pro.item.StatusName == "Out of Stock" ? "badge-danger":"badge-secondary")">@pro.item.StatusName</span>
+                                    </td>
+                                    <td>@(pro.item.Note.Length >= 10 ? pro.item.Note.Substring(0, 10) + "..." : pro.item.Note)</td>
+                                    <td>@(pro.item.UpdatedBy)</td>
+                                    <td>@(pro.item.MinimumStock)</td>
+                                    <td>
+                                        @if (pro.item.UpdatedAt != null)
+                                        {
+                                            @pro.item.UpdatedAt
+                                        }
+                                        else
+                                        {
+                                            <span class="badge badge-danger rounded-pill d-inline">Not Available</span>
+                                        }
+                                    </td>
+                                    <td>@(pro.item.CreatedAt.ToString())</td>
+                                    <td>
+                                        <div style="display: flex; gap: 10px;">
+                                            <div class="edit-user-btn"
+                                                 data-inventory-id="@pro.item.InventoryId"
+                                                 style="background-color: #e3f2fd; padding: 8px; border-radius: 50%;"
+                                                 data-bs-toggle="modal"
+                                                 data-bs-target="#editInventoryModal">
+                                                <i class="fas fa-edit" style="color: #1976d2; cursor: pointer;"></i>
+                                            </div>
+
+                                            <!-- ✅ زر الحذف مع ID المستخدم -->
+                                            <div class="open-delete-modal"
+                                                 data-inventory-id="@pro.item.InventoryId"
+                                                 data-bs-toggle="modal"
+                                                 data-bs-target="#exampleModal"
+                                                 style="background-color: #ffebee; padding: 8px; border-radius: 50%;">
+                                                <i class="fas fa-trash-alt" style="color: #d32f2f; cursor: pointer;"></i>
+                                            </div>
+                                            <div class="btn btn-outline-info details-btn"
+                                                 data-details-id="@pro.item.ProductId">
+                                                <i class="bi bi-eye-fill"></i> Details
+                                            </div>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- Modal: Edit Inventory Record -->
+    <div class="modal fade" id="editInventoryModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <form id="editInventoryForm">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editUserModalLabel">Edit Inventory Record</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body row g-3">
+                        <!-- Record ID -->
+                        <input type="hidden" id="editinvoId" name="InventoryId" />
+
+                        <!-- Quantity -->
+                        <div class="col-md-6">
+                            <label for="editQuantity" class="form-label">Quantity</label>
+                            <input type="number" class="form-control" id="editQuantity" name="Quantity" min="0" />
+                        </div>
+
+                        <!-- Minimum Stock -->
+                        <div class="col-md-6">
+                            <label for="editMinimumStock" class="form-label">Minimum Stock</label>
+                            <input type="number" class="form-control" id="editMinimumStock" name="MinimumStock" min="0" />
+                        </div>
+
+                        <!-- Note -->
+                        <div class="col-md-12">
+                            <label for="editNote" class="form-label">Note</label>
+                            <textarea class="form-control" id="editNote" name="Note" rows="3"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ✅ مودال الحذف -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-danger" id="deleteUserModalLabel">Confirm Deletion</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete this user? This action cannot be undone.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <form method="post">
+                        <input type="hidden" id="userIdToDelete" />
+                        <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Product Details Modal -->
+    <div class="modal fade" id="productdetailsmodal" tabindex="-1" aria-labelledby="editInventoryModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content shadow-lg rounded-4">
+                <div class="modal-header bg-dark text-white">
+                    <h5 class="modal-title" id="editInventoryModalLabel">Product Details</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body row p-4">
+                    <!-- Product Image -->
+                    <div class="col-md-5 text-center">
+                        <img id="detailsdisimgurl" src="" alt="Product Image" class="img-fluid rounded border" style="max-height: 300px;" />
+                    </div>
+
+                    <!-- Product Info -->
+                    <div class="col-md-7">
+                        <h6 class="text-muted" id="detailscatagoryname">Category</h6>
+                        <p class="mt-2" id="detailsdescription">Description</p>
+
+                        <div class="my-3">
+                            <h4 class="text-success" id="detailsprice">$0.00</h4>
+                        </div>
+
+                        <ul class="list-unstyled mt-3">
+                            <li><strong>Name:</strong> <span id="detailsName">Product Name</span></li>
+                            <li><strong>Status:</strong> <span id="detailsstatuname">Status</span></li>
+                            <li><strong>SKU:</strong> <span id="detailssku">SKU</span></li>
+                            <li><strong>Created At:</strong> <span id="detailsdiscreatedat">Date</span></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script>
+         $(document).ready(function () {
+                       var table = $('#productTable').DataTable({
+        pageLength: 10,
+        lengthMenu: [5, 10, 25, 50, 100],
+        ordering: true,
+        searching: true,
+        info: true,
+
+        // ✅ ترتيب: dropdown (lengthMenu) + بحث + كبسات فوق
+        dom:
+            "<'row mb-3 align-items-center'<'col-md-3 d-flex justify-content-start'l><'col-md-5 d-flex justify-content-center'f><'col-md-4 d-flex justify-content-end'B>>" +
+            "<'row'<'col-12'tr>>" +
+            "<'row mt-3'<'col-md-6'i><'col-md-6 d-flex justify-content-end'p>>",
+
+        buttons: [
+            {
+                extend: 'copyHtml5',
+                text: '<i class="bi bi-clipboard"></i> COPY',
+                className: 'btn btn-outline-primary btn-sm rounded-pill fw-semibold'
+            },
+            {
+                extend: 'excelHtml5',
+                text: '<i class="bi bi-file-earmark-excel"></i> EXCEL',
+                className: 'btn btn-outline-success btn-sm rounded-pill fw-semibold'
+            },
+            {
+                extend: 'pdfHtml5',
+                text: '<i class="bi bi-file-earmark-pdf"></i> PDF',
+                className: 'btn btn-outline-danger btn-sm rounded-pill fw-semibold',
+                orientation: 'landscape',
+                pageSize: 'A4'
+            },
+            {
+                extend: 'print',
+                text: '<i class="bi bi-printer"></i> PRINT',
+                className: 'btn btn-outline-dark btn-sm rounded-pill fw-semibold'
+            }
+        ],
+        language: {
+            search: "",
+            searchPlaceholder: "🔎 Search products...",
+            lengthMenu: "Show _MENU_",   // 👈 هذا اللي بظهر dropdown
+            info: "Showing _START_ to _END_ of _TOTAL_ products",
+            paginate: {
+                previous: "← Prev",
+                next: "Next →"
+            }
+        }
+    });
+
+    // ✅ خلي البحث يتمدد
+    $('#productTable_filter').parent().addClass('flex-grow-1');
+    $('#productTable_filter').addClass('w-100 d-flex');
+    $('#productTable_filter label').addClass('w-100 d-flex');
+    $('#productTable_filter input')
+        .addClass('form-control shadow-sm px-4 py-2 rounded-pill w-100')
+        .attr("placeholder", "🔎  Type product name, category, or code...");
+
+
+    // ✅ تنسيق الـ Dropdown
+    $('#productTable_length select')
+        .addClass('form-select form-select-sm rounded-pill shadow-sm')
+        .css({ 'width': '80px', 'display': 'inline-block' });
+        // ✅ مسافة بين الكبسات
+    $('.dt-buttons .btn').css({
+        'margin-left': '0.4rem',
+        'margin-right': '0.4rem'
+    });
+
+
+                   function showAlert(message, type = 'success') {
+            const alertHtml = `
+                <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `;
+            $('#alertPlaceholder').html(alertHtml);
+
+            setTimeout(() => {
+                $('.alert').alert('close');
+            }, 4000);
+        }
+          // ✅ تعديل
+        $('.edit-user-btn').on('click', function () {
+            var inventoryId = $(this).data('inventory-id');
+
+            $.ajax({
+                url: '@Url.Action("GetinvoById", "InventoryController1")',
+                type: 'GET',
+                data: { id: inventoryId },
+                success: function (inventory) {
+                    $('#editinvoId').val(inventory.id);
+                    $('#editQuantity').val(inventory.quantity);
+                    $('#editMinimumStock').val(inventory.minimumStock);
+                    $('#editNote').val(inventory.note);
+                   console.log(inventory.MinimumStock);
+
+                    $('#editInventoryModal').modal('show');
+                },
+                error: function (xhr) {
+                    showAlert("Failed to fetch inventory data.", "danger");
+                    console.log(xhr.responseText);
+                }
+            });
+        });
+
+          // ✅ إرسال التعديلات
+        $('#editInventoryForm').on('submit', function (e) {
+            e.preventDefault();
+            $.ajax({
+                url: '@Url.Action("EditInventory", "InventoryController1")',
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function () {
+                    showAlert("User Updated successfully!", "success");
+                    $('#editInventoryModal').modal('hide');
+                    setTimeout(() => location.reload(), 1500);
+                },
+                error: function (xhr) {
+                    showAlert("Error while saving changes.", "danger");
+                    console.log(xhr.responseText);
+                }
+            });
+        });
+
+             // ✅ حذف
+        $('.open-delete-modal').on('click', function () {
+            var inventoryId = $(this).data('inventory-id');
+            $('#userIdToDelete').val(inventoryId);
+        });
+
+        $('#confirmDeleteBtn').on('click', function (e) {
+            e.preventDefault();
+
+            var inventoryId = $('#userIdToDelete').val();
+
+            $.ajax({
+                url: '@Url.Action("Deleted", "InventoryController1")',
+                type: 'POST',
+                data: { Id: inventoryId },
+                success: function (response) {
+                    showAlert("User deleted successfully!", "success");
+                    $('#exampleModal').modal('hide');
+                    setTimeout(() => location.reload(), 1500);
+                },
+                error: function (xhr) {
+                    showAlert("Error while deleting inventory: " + xhr.status, "danger");
+                }
+            });
+        });
+
+          // ✅ اضهار تفاصيل المنتج
+        $('.details-btn').on('click', function () {
+            var DetailsId = $(this).data('details-id');
+
+            $.ajax({
+                url: '@Url.Action("Details", "InventoryController1")',
+                type: 'GET',
+                data: { id: DetailsId },
+                       success: function (details) {
+            $('#detailsName').text(details.name);
+            $('#detailsdescription').text(details.description);
+            $('#detailsstatuname').text(details.statuname);
+            $('#detailscatagoryname').text(details.catagoryname);
+            $('#detailsprice').text("$" + details.price);
+            $('#detailssku').text(details.sku);
+            $('#detailsdiscreatedat').text(details.createdat);
+            $('#detailsdisimgurl').attr('src', details.imgurl);
+
+            $('#productdetailsmodal').modal('show');
+        },
+                error: function (xhr) {
+                    showAlert("Failed to fetch inventory data.", "danger");
+                    console.log(xhr.responseText);
+                }
+            });
+        });
+         });
+    </script>

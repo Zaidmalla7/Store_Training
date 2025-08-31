@@ -1,0 +1,218 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - matjerZaid</title>
+    <script type="importmap"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+          rel="stylesheet" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+          rel="stylesheet" />
+    <!-- MDB -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/8.2.0/mdb.min.css"
+          rel="stylesheet" />
+
+    <!-- MDB -->
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" integrity="sha512-5Hs3dF2AEPkpNAR7UiOHba+lRSJNeM2ECkwxUIxC1Q/FLycGTbNapWXB4tP889k5T5Ju8fs4b1P5z/iB4nMfSQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- ايقونات bootstrap-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <!-- datatables -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Swiper CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+</head>
+<body>
+    <!-- 💡 Topbar بلون مميز -->
+    <!-- 🔝 Top Contact Bar -->
+    <div class="py-2 small text-light" style="background: linear-gradient(to right, #a47148, #cdb5ac);" data-aos="fade-down">
+        <div class="container d-flex justify-content-between align-items-center flex-wrap">
+
+            <!-- Left: Contact Info -->
+            <div class="d-flex align-items-center gap-4 flex-wrap">
+                <span><i class="bi bi-whatsapp me-1"></i> +962 7869 85568</span>
+                <span><i class="bi bi-envelope me-1"></i> info@zaidmallah.com</span>
+            </div>
+
+            <!-- Right: Socials & Toggle -->
+            <div class="d-flex align-items-center gap-3 mt-2 mt-sm-0">
+                <a href="#" class="text-light fs-5 hover-glow"><i class="bi bi-instagram"></i></a>
+                <a href="#" class="text-light fs-5 hover-glow"><i class="bi bi-whatsapp"></i></a>
+                <a href="#" class="text-light fs-5 hover-glow"><i class="bi bi-facebook"></i></a>
+
+                <!-- Dark Mode Toggle -->
+                <button id="darkModeToggle" class="btn btn-sm btn-outline-light rounded-pill px-3">
+                    🌙
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ✨ Navbar عصري -->
+    <header class="shadow-sm sticky-top bg-white">
+        <nav class="navbar navbar-expand-lg navbar-light py-3">
+            <div class="container">
+                <!-- Logo -->
+                <a class="navbar-brand fw-bold fs-3 text-dark" asp-action="Index" data-aos="fade-right">
+                    <i class="fa-solid fa-shirt me-2 text-warning"></i>EUROPIECE
+                </a>
+
+                <!-- Toggle Button -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain"
+                        aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Content -->
+                <div class="collapse navbar-collapse" id="navbarMain">
+                    <ul class="navbar-nav mx-auto gap-lg-4" data-aos="fade-up">
+                        <li class="nav-item">
+                            <a class="nav-link fw-semibold text-dark" asp-action="Index">Home</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle fw-semibold text-dark" href="#" data-bs-toggle="dropdown">Categories</a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#">Men</a></li>
+                                <li><a class="dropdown-item" href="#">Women</a></li>
+                                <li><a class="dropdown-item" href="#">Accessories</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="#">All Products</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link fw-semibold text-dark" asp-controller="ManagerAppController1" asp-action="Manager">Management</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link fw-semibold text-dark" asp-action="Allproduct">All product</a>
+                            <a class="nav-link fw-semibold text-dark" asp-action="Allpduct">All test</a>
+                        </li>
+                    </ul>
+
+                    <!-- 🔍 Stylish Search -->
+                    <form class="d-flex me-lg-3 mb-3 mb-lg-0" role="search" data-aos="zoom-in">
+                        <div class="input-group rounded-pill overflow-hidden shadow-sm border">
+                            <input class="form-control border-0 px-3" type="search" placeholder="Search" />
+                            <button class="btn btn-dark px-3" type="submit">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- ❤️ + 🛒 Icons -->
+                    <div class="d-flex align-items-center gap-3" data-aos="fade-left">
+                        <partial name="_LoginPartial" />
+
+                        <!-- مفضلة -->
+                        <a href="/Wishlist" class="position-relative text-decoration-none">
+                            <div class="rounded-circle bg-white shadow p-2 hover-glow">
+                                <i class="fa-solid fa-heart text-danger fs-5"></i>
+                            </div>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger text-white">
+                                4
+                            </span>
+                        </a>
+
+                        <!-- السلة -->
+                        <a href="/Cart" class="position-relative text-decoration-none">
+                            <div class="rounded-circle bg-white shadow p-2 hover-glow">
+                                <i class="fa-solid fa-bag-shopping text-dark fs-5"></i>
+                            </div>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-dark text-white">
+                                3
+                            </span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+
+    <!-- ======= Elegant Footer ======= -->
+    <footer class="text-light pt-5" style="background-color: #121212; font-family: 'Segoe UI', sans-serif;" data-aos="fade-up">
+        <div class="container">
+            <div class="row gy-5">
+
+                <!-- Logo + Description -->
+                <div class="col-md-4">
+                    <h4 class="fw-bold text-warning">
+                        <i class="fas fa-gem me-2"></i>EUROPIECE
+                    </h4>
+                    <p class="mt-3 text-secondary">
+                        Discover premium fashion, accessories and more — delivered with care and quality. We’re your go-to online destination for standout style.
+                    </p>
+
+                    <!-- Socials -->
+                    <div class="mt-4 d-flex gap-3">
+                        <a href="#" class="text-light fs-5 hover-glow"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-light fs-5 hover-glow"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-light fs-5 hover-glow"><i class="fab fa-whatsapp"></i></a>
+                        <a href="#" class="text-light fs-5 hover-glow"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+
+                <!-- Links -->
+                <div class="col-md-2">
+                    <h6 class="text-uppercase fw-bold mb-3 text-warning">Explore</h6>
+                    <ul class="list-unstyled text-secondary">
+                        <li class="mb-2"><a href="#" class="text-decoration-none text-secondary hover-link">Home</a></li>
+                        <li class="mb-2"><a href="#" class="text-decoration-none text-secondary hover-link">Shop</a></li>
+                        <li class="mb-2"><a href="#" class="text-decoration-none text-secondary hover-link">Offers</a></li>
+                        <li><a href="#" class="text-decoration-none text-secondary hover-link">About</a></li>
+                    </ul>
+                </div>
+
+                <!-- Support -->
+                <div class="col-md-3">
+                    <h6 class="text-uppercase fw-bold mb-3 text-warning">Support</h6>
+                    <ul class="list-unstyled text-secondary">
+                        <li class="mb-2"><a href="#" class="text-decoration-none text-secondary hover-link">Help Center</a></li>
+                        <li class="mb-2"><a href="#" class="text-decoration-none text-secondary hover-link">Track Order</a></li>
+                        <li class="mb-2"><a href="#" class="text-decoration-none text-secondary hover-link">Return Policy</a></li>
+                        <li><a href="#" class="text-decoration-none text-secondary hover-link">Privacy Policy</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact -->
+                <div class="col-md-3">
+                    <h6 class="text-uppercase fw-bold mb-3 text-warning">Contact</h6>
+                    <p class="text-secondary"><i class="fas fa-map-marker-alt me-2 text-warning"></i> Zarqa, Jordan</p>
+                    <p class="text-secondary"><i class="fas fa-envelope me-2 text-warning"></i> zaidalmallah444@gmail.com</p>
+                    <p class="text-secondary"><i class="fas fa-phone me-2 text-warning"></i> +962 78 698 5568</p>
+                </div>
+            </div>
+
+            <!-- Divider -->
+            <hr class="border-secondary my-4">
+
+            <!-- Bottom -->
+            <div class="text-center text-secondary small pb-3">
+                © 2025 <span class="fw-bold text-warning">EUROPIECE</span>. All Rights Reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- ======= End Footer ======= -->
+    <!-- Footer -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/8.2.0/mdb.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+
+    <!-- Swiper JS -->
+
+</body>
+</html>

@@ -1,0 +1,395 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using StoreOn.Models
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    var appUser = await UserManager.GetUserAsync(User);
+    var username = appUser?.UserName ?? "User";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] - matjerZaid</title>
+
+    <!-- Fonts & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- Bootstrap & MDB -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/8.2.0/mdb.min.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/8.2.0/mdb.min.css"
+          rel="stylesheet" />
+
+    <!-- datatables -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Chart.js + SweetAlert -->
+    <!-- ✅ DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+
+    <!-- ✅ Buttons Extension CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.bootstrap5.min.css">
+
+    <!-- ✅ jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+
+    <!-- ✅ DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
+    <!-- ✅ Buttons Extension JS -->
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.bootstrap5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+  
+
+    <style>
+        :root {
+            --sidebar-bg: #002B5B;
+            --sidebar-hover: #013A63;
+            --transition: 0.3s;
+            --body-light: #f5f6fa;
+            --body-dark: #121212;
+            --card-light: #fff;
+            --card-dark: #1f1f2e;
+        }
+
+        body {
+            margin: 0;
+            display: flex;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--body-light);
+            transition: background var(--transition), color var(--transition);
+        }
+
+            body.dark {
+                background-color: var(--body-dark);
+                color: #eee;
+            }
+
+                body.dark .card {
+                    background-color: var(--card-dark);
+                }
+
+        .sidebar {
+            width: 250px;
+            min-height: 100vh;
+            background: var(--sidebar-bg);
+            transition: width var(--transition);
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            overflow: hidden;
+        }
+
+            .sidebar.collapsed {
+                width: 80px;
+            }
+
+            .sidebar .nav-link {
+                color: #fff;
+                padding: 12px 20px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+                .sidebar .nav-link:hover,
+                .sidebar .nav-link.active {
+                    background: var(--sidebar-hover);
+                }
+
+            .sidebar.collapsed .nav-link span,
+            .sidebar.collapsed h4 {
+                display: none;
+            }
+
+        .main-content {
+            margin-left: 250px;
+            transition: margin-left var(--transition);
+            width: calc(100% - 250px);
+        }
+
+            .main-content.collapsed {
+                margin-left: 80px;
+                width: calc(100% - 80px);
+            }
+
+        .topbar {
+            padding: 10px 20px;
+            background: #fff;
+            transition: background var(--transition);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        body.dark .topbar {
+            background: #1f1f2e;
+        }
+
+        .toggle-btn {
+            color: #333;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        body.dark .toggle-btn {
+            color: #eee;
+        }
+
+        .toggle-btn:hover {
+            transform: scale(1.1);
+        }
+
+        #scrollTopBtn {
+            display: none;
+            z-index: 1000;
+        }
+
+        .watermark-container {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .single-watermark {
+            position: absolute;
+            transform: rotate(-30deg);
+            font-size: 18px;
+            color: rgba(70, 90, 110, 0.08);
+            font-family: Arial, sans-serif;
+            user-select: none;
+            white-space: nowrap;
+        }
+        /* شعار الموقع المختصر */
+        .short-logo {
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+
+        .sidebar.collapsed .full-logo {
+            display: none !important;
+        }
+
+        .sidebar.collapsed .short-logo {
+            display: inline !important;
+        }
+
+        .sidebar:not(.collapsed) .short-logo {
+            display: none !important;
+        }
+
+        /* إخفاء المعلومات النصية عند التصغير */
+        .sidebar.collapsed .user-info,
+        .sidebar.collapsed .user-btn {
+            display: none !important;
+        }
+
+        .sidebar.collapsed .collapsed-user-info,
+        .sidebar.collapsed .collapsed-user-btn {
+            display: block !important;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="watermark-container">
+        <div class="watermark-text" id="watermark"></div>
+    </div>
+
+    <!-- Sidebar -->
+    <div id="sidebar" class="sidebar d-flex flex-column p-3 text-white">
+        <div class="text-center fw-bold mb-4">
+            <span class="full-logo">EUROPIECE</span>
+            <span class="short-logo d-none">EP</span>
+        </div>
+
+        <nav class="nav flex-column flex-grow-1">
+            <a class="nav-link text-white mb-2" asp-controller="ManagerAppController1" asp-action="Manager">
+                <i class="bi bi-speedometer2 me-2"></i> <span>Dashboard</span>
+            </a>
+            <a class="nav-link text-white mb-2" asp-controller="Home" asp-action="Index">
+                <i class="fa-regular fa-house"></i> <span>Home</span>
+            </a>
+            <a class="nav-link text-white mb-2 d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#productSubmenu">
+                <span><i class="bi bi-box me-2"></i> Product Management</span>
+                <i class="bi bi-chevron-down small"></i>
+            </a>
+            <div class="collapse ps-3" id="productSubmenu">
+                <a class="nav-link text-white" asp-controller="AllProdectsController1" asp-action="Allprodect">
+                    <i class="bi bi-list-ul me-2"></i> All Products
+                </a>
+                <a class="nav-link text-white" asp-controller="AllProdectsController1" asp-action="Addprodect">
+                    <i class="bi bi-plus-circle me-2"></i> Add New Product
+                </a>
+            </div>
+
+            <a class="nav-link text-white mb-2" href="#"><i class="bi bi-cart-check me-2"></i> <span>Orders Management</span></a>
+            <a class="nav-link text-white mb-2" asp-controller="AllUserController1" asp-action="AllUser">
+                <i class="bi bi-people me-2"></i> <span>Customers Management</span>
+            </a>
+            <a class="nav-link text-white mb-2" asp-controller="InventoryController1" asp-action="Inventory">
+                <i class="bi bi-box-seam me-2"></i> <span>Inventory Management</span>
+            </a>
+        </nav>
+
+        @if (SignInManager.IsSignedIn(User))
+        {
+            <div class="user-section mt-auto border-top border-light pt-3">
+               
+
+                <div class="collapsed-user-info d-none text-center">
+                    <i class="fa-regular fa-user fs-5 text-white mb-2 d-block"></i>
+                </div>
+
+                <a class="btn btn-sm btn-outline-light w-100 mb-2 user-btn" asp-route-source="system" asp-area="Identity" asp-page="/Account/Manage/Index">
+                    <i class="fa-solid fa-sliders me-1"></i> <span>Manage Account</span>
+                </a>
+
+                <a class="btn btn-sm btn-outline-light w-100 mb-2 collapsed-user-btn d-none" asp-route-source="system" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">
+                    <i class="fa-solid fa-sliders"></i>
+                </a>
+
+                <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                    <button type="submit" class="btn btn-sm btn-danger w-100 user-btn">
+                        <i class="fa-solid fa-arrow-right-from-bracket me-1"></i> <span>Logout</span>
+                    </button>
+                    <button type="submit" class="btn btn-sm btn-danger w-100 collapsed-user-btn d-none" title="Logout">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    </button>
+                </form>
+            </div>
+        }
+
+    </div>
+
+    <!-- Main -->
+    <div id="main" class="main-content">
+        <div class="topbar">
+            <div class="d-flex align-items-center">
+                <i class="bi toggle-btn me-3" id="sidebarToggleBtn"></i>
+                <a class="navbar-brand text-primary fw-bolder"><i class="fa-solid fa-shirt mx-1"></i>EUROPIECE</a>
+            </div>
+            <div class="d-flex align-items-center">
+                <i class="bi bi-bell bell-btn me-3" onclick="showToast()"></i>
+                <i class="bi bi-moon-stars theme-btn me-3" onclick="toggleTheme()"></i>
+                <span class="fw-semibold">Admin: @username</span>
+                <span id="clock" class="ms-3 text-muted small"></span>
+            </div>
+        </div>
+
+        <div class="p-4">
+            @RenderBody()
+        </div>
+    </div>
+
+    <!-- Scroll to Top -->
+    <button onclick="scrollToTop()" id="scrollTopBtn" class="btn btn-primary position-fixed bottom-0 end-0 m-4">
+        <i class="bi bi-arrow-up"></i>
+    </button>
+
+    <!-- Scripts -->
+    <script>
+        function updateClock() {
+            const now = new Date();
+            const h = now.getHours().toString().padStart(2, '0');
+            const m = now.getMinutes().toString().padStart(2, '0');
+            const s = now.getSeconds().toString().padStart(2, '0');
+            document.getElementById('clock').textContent = `${h}:${m}:${s}`;
+        }
+        setInterval(updateClock, 1000); updateClock();
+
+        // سايدبار قابل للفتح/الإغلاق
+        const sidebar = document.getElementById('sidebar');
+        const main = document.getElementById('main');
+        const toggleBtn = document.getElementById('sidebarToggleBtn');
+
+        function updateToggleIcon() {
+            if (sidebar.classList.contains('collapsed')) {
+                toggleBtn.classList.remove('bi-x');
+                toggleBtn.classList.add('bi-list');
+            } else {
+                toggleBtn.classList.remove('bi-list');
+                toggleBtn.classList.add('bi-x');
+            }
+        }
+
+        if (localStorage.getItem('sidebarCollapsed') === 'true') {
+            sidebar.classList.add('collapsed');
+            main.classList.add('collapsed');
+        }
+        updateToggleIcon();
+
+        toggleBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
+            main.classList.toggle('collapsed');
+            localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
+            updateToggleIcon();
+        });
+
+        // الوضع الداكن
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.body.classList.add('dark');
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('dark');
+            localStorage.setItem('darkMode', document.body.classList.contains('dark'));
+        }
+
+        // إشعار
+        function showToast() {
+            Swal.fire({
+                icon: 'info',
+                title: 'تنبيه جديد',
+                text: 'تم استلام إشعار جديد!',
+                confirmButtonText: 'حسناً'
+            });
+        }
+
+        // زر للأعلى
+        const scrollTopBtn = document.getElementById('scrollTopBtn');
+        window.onscroll = () => {
+            scrollTopBtn.style.display = window.scrollY > 200 ? 'block' : 'none';
+        };
+
+        // العلامة المائية
+        const watermarkText = "@username";
+        const container = document.getElementById("watermark");
+        const rowCount = 6, colCount = 4;
+        for (let r = 0; r < rowCount; r++) {
+            for (let c = 0; c < colCount; c++) {
+                const el = document.createElement("div");
+                el.className = "single-watermark";
+                el.textContent = watermarkText;
+                el.style.top = `${(r * (100 / rowCount)) + Math.random() * 5}vh`;
+                el.style.left = `${(c * (100 / colCount)) + Math.random() * 5}vw`;
+                container.appendChild(el);
+            }
+        }
+    </script>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/8.2.0/mdb.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

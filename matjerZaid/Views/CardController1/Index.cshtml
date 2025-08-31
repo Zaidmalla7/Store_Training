@@ -1,0 +1,317 @@
+﻿@model List<ECApp.Model.Data.Card>
+
+@{
+    ViewData["Title"] = "Shopping Cart";
+    decimal total = 0;
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+
+<style>
+    body {
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .cart-header {
+        font-weight: 700;
+        font-size: 1.8rem;
+        border-bottom: 2px solid #eee;
+        padding-bottom: 10px;
+        margin-bottom: 25px;
+    }
+
+    .cart-item {
+        border-bottom: 1px solid #eaeaea;
+        padding: 20px 0;
+        transition: all 0.3s ease;
+    }
+
+        .cart-item img {
+            width: 90px;
+            height: 90px;
+            object-fit: cover;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            transition: transform 0.3s;
+        }
+
+            .cart-item img:hover {
+                transform: scale(1.05);
+            }
+
+    .qty-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 20px;
+        font-weight: bold;
+        padding: 0;
+        background-color: transparent;
+        border: none;
+        outline: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: 0.2s;
+    }
+
+        .qty-btn:hover {
+            background-color: #f1f1f1;
+        }
+
+
+    .btn-red {
+        background-color: #dc3545;
+        color: white;
+        border: none;
+    }
+
+        .btn-red:hover {
+            background-color: #bb2d3b;
+        }
+
+    .note-box {
+        height: 130px;
+        resize: none;
+    }
+
+    .price-info small {
+        display: block;
+        font-size: 0.85rem;
+        color: gray;
+    }
+
+    .price-info del {
+        font-size: 0.9rem;
+        color: #ff5722;
+    }
+
+    .cart-summary {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 10px;
+        border: 1px solid #ddd;
+    }
+
+    .summary-title {
+        font-weight: 600;
+        margin-bottom: 10px;
+        font-size: 1.2rem;
+    }
+
+    .affirm {
+        font-size: 0.9rem;
+        color: #555;
+    }
+
+        .affirm a {
+            color: #dc3545;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+    
+
+
+</style>
+
+<div class="container my-5">
+    <div class="cart-header">🛒 Shopping Cart</div>
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="alert alert-warning text-center fs-5 py-5">Your cart is currently empty.</div>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-lg-8">
+                @foreach (var item in Model)
+                {
+                    var subtotal = item.FinalPrice * item.Quantity;
+                    total += subtotal;
+                    <div class="cart-item d-flex justify-content-between align-items-center" id="row-@item.CartId">
+                        <div class="d-flex align-items-center gap-3">
+                            <img src="@item.ImageUrl" alt="@item.ProductName" />
+                            <div>
+                                <div class="fw-semibold d-flex align-items-center gap-2">
+                                    @item.ProductName
+                                   
+                                </div>
+                                <div class="price-info mt-2">
+                                    <div>
+                                        <strong class="text-success">@item.FinalPrice.ToString("C")</strong>
+                                        <small class="ms-2"><del>@item.Price.ToString("C")</del></small>
+                                    </div>
+                                    <small class="text-muted">Core Deposit: @((item.Price - item.FinalPrice).ToString("C"))</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="btn-group border" role="group">
+                                <button class="btn qty-btn text-danger" data-id="@item.CartId" data-action="decrease" title="نقص">
+                                    <strong>-</strong>
+                                </button>
+                                <span id="qty-@item.CartId" class="px-3 py-1">@item.Quantity</span>
+                                <button class="btn qty-btn text-success" data-id="@item.CartId" data-action="increase" title="زيد">
+                                    <strong>+</strong>
+                                </button>
+                            </div>
+
+                            <div id="subtotal-@item.CartId">@subtotal.ToString("C")</div>
+                            <button class="btn btn-red btn-sm remove-btn" data-id="@item.CartId" title="Remove"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                }
+
+                <div class="mt-4 d-flex justify-content-between">
+                    <a href="/" class="btn btn-outline-secondary"><i class="fas fa-arrow-left me-1"></i> Continue Shopping</a>
+                </div>
+            </div>
+
+            <div class="col-lg-4 mt-4 mt-lg-0">
+                <div class="mb-4">
+                    <label class="form-label">Order Note</label>
+                    <textarea class="form-control note-box" placeholder="Any special instructions?"></textarea>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label">Promo Code</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Enter promo code">
+                        <button class="btn btn-dark">Apply</button>
+                    </div>
+                </div>
+
+                <div class="cart-summary">
+                    <div class="summary-title">Cart Totals</div>
+                    <ul class="list-group list-group-flush mb-2">
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>Subtotal:</span>
+                            <span id="cart-total">@total.ToString("C")</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>Tax:</span>
+                            <span>$0.00</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between fw-bold">
+                            <span>Total:</span>
+                            <span id="cart-total-final">@total.ToString("C")</span>
+                        </li>
+                    </ul>
+                    <div class="affirm mt-2">
+                        Starting at <strong>$414/mo</strong> with <a href="#">Affirm</a>
+                    </div>
+                    <a asp-action="Checkout" class="btn btn-red w-100 mt-3">PROCEED TO CHECKOUT</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        $(document).ready(function () {
+            function updateTotal() {
+                let total = 0;
+                $("[id^='subtotal-']").each(function () {
+                    let text = $(this).text().trim();
+                    text = text.replace(/[^0-9.-]+/g, "");
+                    let value = parseFloat(text);
+                    if (!isNaN(value)) {
+                        total += value;
+                    }
+                });
+                $("#cart-total, #cart-total-final").text(total.toLocaleString("en-US", {
+                    style: "currency",
+                    currency: "USD"
+                }));
+            }
+
+            $(".qty-btn").click(function () {
+                const btn = $(this);
+                const spinner = btn.find(".spinner-border");
+                const cartId = btn.data("id");
+                const action = btn.data("action");
+                const url = `/CardController1/${action === "increase" ? "IncreaseQuantity" : "DecreaseQuantity"}`;
+
+                btn.prop("disabled", true);
+                spinner.removeClass("d-none");
+
+                $.ajax({
+                    url: url,
+                    method: "POST",
+                    data: { id: cartId },
+                    success: function (response) {
+                        $(`#qty-${cartId}`).text(response.quantity);
+                        $(`#subtotal-${cartId}`).text(response.subtotal.toLocaleString("en-US", {
+                            style: "currency",
+                            currency: "USD"
+                        }));
+                        updateTotal();
+                    },
+                    complete: function () {
+                        btn.prop("disabled", false);
+                        spinner.addClass("d-none");
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Error updating quantity.'
+                        });
+                    }
+                });
+            });
+
+            $(".remove-btn").click(function () {
+                const cartId = $(this).data("id");
+                const row = $(`#row-${cartId}`);
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "Remove this item from your cart?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#dc3545',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Yes, remove it'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: `/CardController1/RemoveFromCart`,
+                            method: "POST",
+                            data: { id: cartId },
+                            success: function () {
+                                row.remove();
+                                updateTotal();
+                                       if ($(".cart-item").length === 0) {
+            $(".cart-header").after('<div class="alert alert-warning text-center fs-5 py-5 empty-message">Your cart is currently empty.</div>');
+            $(".cart-header").nextAll().not(".empty-message").remove();
+        }
+
+
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Removed',
+                                    text: 'Item was removed from your cart',
+                                    timer: 2000,
+                                    showConfirmButton: false
+                                });
+                            },
+                            error: function () {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Oops...',
+                                    text: 'Error removing item.'
+                                });
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+}

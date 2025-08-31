@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace matjerZaid.Models.Data
+namespace ECApp.Model.Data
 {
     public class Podects
     {
@@ -41,7 +41,9 @@ namespace matjerZaid.Models.Data
         public string? AdminName { get; set; }
 
         public int? MinimumStock { get; set; }
+        public bool Chick { get; set; }
 
+        public decimal EffectivePrice { get; set; }
 
     }
 }

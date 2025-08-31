@@ -1,11 +1,11 @@
-﻿using matjerZaid.Data;
-using matjerZaid.Models.Data;
-using matjerZaid.Models.Database;
+﻿using ECApp.Data;
+using ECApp.Model.Data;
+using ECApp.Model.Database;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
-namespace matjerZaid.Controllers
+namespace ECApp.Controllers
 {
     public class AllProdectsController1 : Controller
     {
@@ -18,12 +18,12 @@ namespace matjerZaid.Controllers
        
         public async Task<ActionResult> Allprodect()
         {
-            List<Models.Data.Podects> list = new List<Models.Data.Podects>();
+            List<Model.Data.Podects> list = new List<Model.Data.Podects>();
             list =  (from obj in await _context.Products.ToListAsync()
                      join cata in await _context.Categories.ToListAsync() on obj.CategoryId equals cata.CategoryId
                      join sut in await _context.Statuses.ToListAsync() on obj.StatusId equals sut.StatusId
                      join img in await  _context.ProductImages.Where(x => x.IsPrimary == true).ToListAsync() on obj.ProductId equals img.ProductId
-                     select new Models.Data.Podects
+                     select new Model.Data.Podects
                     {
                         ProductId = obj.ProductId,
                         Name = obj.Name,
@@ -42,7 +42,7 @@ namespace matjerZaid.Controllers
             return View(list);
         }
         [HttpGet]
-        public async Task<ActionResult> Addprodect(matjerZaid.Models.Data.Podects podects)
+        public async Task<ActionResult> Addprodect(global::ECApp.Model.Data.Podects podects)
         {
             ViewBag.catagory = await _context.Categories.ToListAsync();
             ViewBag.prodectstuts =  await _context.Statuses.
@@ -51,129 +51,173 @@ namespace matjerZaid.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<ActionResult> save(matjerZaid.Models.Data.Podects podects, List<IFormFile> Images)
+        public async Task<ActionResult> save(global::ECApp.Model.Data.Podects podects, List<IFormFile> Images)
         {
-           
-            matjerZaid.Models.Database.Product objAdd = new Models.Database.Product();
-            objAdd.Name = podects.Name;
-            objAdd.Description = podects.Description;
-            objAdd.CreatedAt = DateOnly.FromDateTime(DateTime.Now);
-            objAdd.Price = podects.Price;
-            objAdd.DiscountPrice = Math.Round(podects.DiscountPrice ?? 0, 2);
-            objAdd.Stock = podects.Stock;
-            objAdd.CategoryId = podects.CategoryId;
-            objAdd.StatusId = podects.StatusId;
-            _context.Products.Add(objAdd);
-            await _context.SaveChangesAsync();
-            // 🔄 بعد ما نحفظ المنتج، نستخدم الـ ID الجديد
-            int newProductId = objAdd.ProductId;
-
-            // 📸 نستخدم فلاج لتحديد أول صورة
-            bool isFirst = true;
-            // 2. أضف الصور
-            foreach (var image in Images)
+            using (var transaction = await _context.Database.BeginTransactionAsync())
             {
-                if (image.Length > 0)
+                try
                 {
-                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName);
-                    var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads/images", fileName);
-
-                    using (var stream = new FileStream(path, FileMode.Create))
+                    // 🟢 إنشاء المنتج
+                    var objAdd = new Product
                     {
-                        await image.CopyToAsync(stream);
+                        Name = podects.Name,
+                        Description = podects.Description,
+                        CreatedAt = DateOnly.FromDateTime(DateTime.Now),
+                        Price = podects.Price,
+                        DiscountPrice = Math.Round(podects.DiscountPrice ?? 0, 2),
+                        Stock = podects.Stock,
+                        CategoryId = podects.CategoryId,
+                        StatusId = podects.StatusId,
+                    };
+                    _context.Products.Add(objAdd);
+                    await _context.SaveChangesAsync();
+
+                    int newProductId = objAdd.ProductId;
+
+                    // 🖼️ إضافة الصور
+                    bool isFirst = true;
+                    foreach (var image in Images)
+                    {
+                        if (image.Length > 0)
+                        {
+                            var fileName = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName);
+                            var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads/images", fileName);
+
+                            using (var stream = new FileStream(path, FileMode.Create))
+                            {
+                                await image.CopyToAsync(stream);
+                            }
+
+                            var productImage = new ProductImage
+                            {
+                                ProductId = newProductId,
+                                ImageUrl = "/uploads/images/" + fileName,
+                                IsPrimary = isFirst
+                            };
+                            isFirst = false;
+
+                            _context.ProductImages.Add(productImage);
+                        }
                     }
 
-                    var productImage = new ProductImage
+                    objAdd.Sku = "PRD-" + Guid.NewGuid().ToString().Substring(0, 8).ToUpper();
+
+                    //  تحديث المنتج بعد تعيين SKU
+                    await _context.SaveChangesAsync();
+
+                    //  إدخال سجل مخزون وحركة إذا الأدمن اختار
+                    if (podects.AutoCreateInventory)
                     {
-                        ProductId = newProductId,
-                        ImageUrl = "/uploads/images/" + fileName,
-                        IsPrimary = isFirst // ✅ أول صورة تكون True، والباقي False
-                    };
-                    isFirst = false; // ⛔ بعد أول صورة، نخلي الباقي IsPrimary = false
+                        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
 
-                    _context.ProductImages.Add(productImage);
+                        var inv = new Inventory
+                        {
+                            ProductId = objAdd.ProductId,
+                            Quantity = podects.Stock ?? 0,
+                            StatusId = global::ECApp.Services.InventoryService.GetInventoryStatus(podects.Stock ?? 0 , podects.MinimumStock ?? 0),
+                            CreatedAt = DateOnly.FromDateTime(DateTime.Now),
+                            MinimumStock = podects.MinimumStock ?? 1,
+                            Note = "Auto-created by system on product creation",
+                            UpdatedBy = userIdClaim?.Value
+                        };
+                        _context.Inventories.Add(inv);
+                        await _context.SaveChangesAsync();
+
+                        var movement = new Inventorymovement
+                        {
+                            productId = objAdd.ProductId,
+                            quantity = podects.Stock ?? 0,
+                            note = "Initial stock entry on product creation",
+                            movementType = "in",
+                            createdAt = DateOnly.FromDateTime(DateTime.Now),
+                            createdBy = userIdClaim?.Value
+                        };
+                        _context.inventorymovements.Add(movement);
+                        await _context.SaveChangesAsync();
+                    }
+
+                    //  الكل نجح  نسكر الترانز اكشن
+                    await transaction.CommitAsync();
+                    return RedirectToAction("Allprodect");
+                }
+                
+                catch (Exception ex)
+                {
+                    //  في خطأ  نرجع كل شيء
+                    await transaction.RollbackAsync();
+                    throw;
                 }
             }
-            objAdd.Sku = "PRD-" + Guid.NewGuid().ToString().Substring(0, 8).ToUpper() + "-" + newProductId;
-            await _context.SaveChangesAsync();
-
-            //و كود انشاء  سجل في جدول الحركات لما ينعمل المنتج في حال الادمن اختار ينشئو يدوي
-            //كود انشاء سجل في جدول المخزون في حال الادمن اختار ينشئو يدوي
-            bool autoCheckbox = podects.AutoCreateInventory;
-            matjerZaid.Models.Database.Inventory inv = new Models.Database.Inventory();
-            matjerZaid.Models.Database.Inventorymovement type = new Models.Database.Inventorymovement();
-            //التحقق من اختيار الادمن 
-            if (autoCheckbox == true)
-            {
-                //كود سجل المخزون
-                inv.ProductId = objAdd.ProductId;
-                inv.Quantity  = podects.Stock ?? 0;
-                inv.StatusId = podects.StatusId ?? 0;
-                inv.CreatedAt = DateOnly.FromDateTime(DateTime.Now);
-                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-                if (userIdClaim != null)
-                {
-                    inv.UpdatedBy = userIdClaim.Value;
-                }
-
-                inv.MinimumStock = podects.MinimumStock ?? 1;
-                inv.Note = "Auto-created by system on product creation";
-                _context.Inventories.Add(inv);
-                await _context.SaveChangesAsync();
-
-                //كود سجل الحركات
-                type.productId = objAdd.ProductId;
-                type.quantity = podects.Stock ?? 0;
-                type.note = "Initial stock entry on product creation";
-                type.movementType = "in";
-                type.createdAt = DateOnly.FromDateTime(DateTime.Now);
-                if (userIdClaim != null)
-                {
-                    type.createdBy = userIdClaim.Value;
-                }
-                _context.inventorymovements.Add(type);
-                await _context.SaveChangesAsync();
-            }
-
-
-            return RedirectToAction("Allprodect");
-
         }
+
         [HttpPost]
-        public async Task<ActionResult> Zaid(int Id)
+        public async Task<ActionResult> Delet(int Id)
         {
-            
+            using var transaction = await _context.Database.BeginTransactionAsync();
+
+            try
+            {
                 var product = await _context.Products.FirstOrDefaultAsync(x => x.ProductId == Id);
                 if (product == null)
                 {
                     return NotFound();
                 }
-            var imgList = await _context.ProductImages.Where(x => x.ProductId == Id).ToListAsync();
-            if(imgList.Any())
-            {
-                foreach (var img in imgList)
+                // حذف صور المنتج كاملات
+                var imgList = await _context.ProductImages.Where(x => x.ProductId == Id).ToListAsync();
+                if (imgList.Any())
                 {
-                    _context.ProductImages.Remove(img);  
+                   
+                    _context.ProductImages.RemoveRange(imgList);
+                    await _context.SaveChangesAsync();
                 }
-                await _context.SaveChangesAsync();
-            }
-           
 
+                // الحركات
+                var movement = await _context.inventorymovements.Where(x => x.productId == Id).ToListAsync();
+                if (movement.Any())
+                {
 
+                    _context.inventorymovements.RemoveRange(movement);
+                }
+
+                // سجل المخزون
+                var invo = await _context.Inventories.FirstOrDefaultAsync(x => x.ProductId == Id);
+                if (invo != null)
+                {
+                    _context.Inventories.Remove(invo);
+                }
+
+                // حذف المنتج
                 _context.Products.Remove(product);
+
+                // تنفيذ وحفظ كل التغييرات 
                 await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
 
                 return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                return Json(new { success = false, error = ex.Message });
+            }
         }
+
 
         public async Task<ActionResult> Update(int ProductId)
         {
+            //كود تشيك اذا المنتج الو سجل في جدول المخزون او لا 
+            var invo = await _context.Inventories.Where(x => x.ProductId == ProductId).FirstOrDefaultAsync();
+            var chick = false;
+            if(invo != null)
+            {
+                chick = true;
+            }
             ViewBag.catagory = await _context.Categories.ToListAsync();
             ViewBag.prodectstuts = await _context.Statuses.
                 Where(x => x.Type == "Prodect").ToListAsync();
-            Models.Data.Podects? list = new Models.Data.Podects();
+            Model.Data.Podects? list = new Model.Data.Podects();
             list =   (from obj in await _context.Products.Where(x => x.ProductId == ProductId).ToListAsync()
-                    select new Models.Data.Podects
+                    select new Model.Data.Podects
                     {
                         ProductId = ProductId,
                         Name = obj.Name,
@@ -184,15 +228,15 @@ namespace matjerZaid.Controllers
                         Sku = obj.Sku,
                         StatusId = obj.StatusId,
                         Stock = obj.Stock,
-
+                        Chick = chick,
                     }).FirstOrDefault();
 
 
             return View(list);
         }
-        public async Task<ActionResult> UpdateSave(matjerZaid.Models.Data.Podects podects)
+        public async Task<ActionResult> UpdateSave(global::ECApp.Model.Data.Podects podects)
         {
-            matjerZaid.Models.Database.Product ? objAdd  = await _context.Products.Where(x => x.ProductId == podects.ProductId).FirstOrDefaultAsync();
+            global::ECApp.Model.Database.Product ? objAdd  = await _context.Products.Where(x => x.ProductId == podects.ProductId).FirstOrDefaultAsync();
 
             if (objAdd == null)
             {

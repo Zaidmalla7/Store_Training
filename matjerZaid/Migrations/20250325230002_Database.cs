@@ -1,12 +1,12 @@
 ﻿using System;
-using matjerZaid.Models.Database;
+using ECApp.Model.Database;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Syncfusion.JavaScript.DataVisualization.Models.Diagram;
 
 #nullable disable
 
-namespace matjerZaid.Migrations
+namespace ECApp.Migrations
 {
     /// <inheritdoc />
     public partial class Database : Migration
@@ -258,7 +258,7 @@ namespace matjerZaid.Migrations
                     productId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    description = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     price = table.Column<decimal>(type: "money", nullable: false),
                     stock = table.Column<int>(type: "int", nullable: true),
                     categoryId = table.Column<int>(type: "int", nullable: false),
@@ -370,10 +370,10 @@ namespace matjerZaid.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     productId = table.Column<int>(type: "int", nullable: false),
                     quantity = table.Column<int>(type: "int", nullable: false),
-                    updatedAt = table.Column<DateOnly>(type: "date", nullable: false),
+                    updatedAt = table.Column<DateOnly>(type: "date", nullable: true),
                     statusId = table.Column<int>(type: "int", nullable: false),
                     minimumStock = table.Column<int>(type: "int" , nullable: false),
-                    note = table.Column<string>(type: "nvarchar(255)" , nullable: false),
+                    note = table.Column<string>(type: "nvarchar(255)" , nullable: true),
                     updatedBy = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     createdAt = table.Column<DateOnly>(type: "date", nullable: false)
                 },

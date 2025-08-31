@@ -1,0 +1,479 @@
+﻿@{
+    ViewData["Title"] = "All Products";
+    var currentPage = (int)ViewBag.CurrentPage;
+    var totalPages = (int)ViewBag.TotalPages;
+}
+@model List<ECApp.Model.Data.Podects>
+
+<style>
+    body {
+        font-family: 'Segoe UI', sans-serif;
+        background-color: #f1f5f9;
+        color: #111827;
+    }
+
+    /* ==== HERO TITLE ==== */
+    .hero-wrapper {
+        background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+        color: white;
+        padding: 4rem 2rem;
+        text-align: center;
+        margin-bottom: 2rem;
+        border-radius: 1rem;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        position: relative;
+        overflow: hidden;
+    }
+
+        .hero-wrapper::after {
+            content: '';
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            top: -40px;
+            right: -40px;
+        }
+
+        .hero-wrapper h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 0.75rem;
+        }
+
+        .hero-wrapper p {
+            font-size: 1.25rem;
+            color: #e0e7ff;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+    /* ==== FILTER SIDEBAR ==== */
+    .filter-sidebar {
+        background-color: #ffffff;
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        border: 1px solid #e5e7eb;
+        transition: all 0.3s ease;
+        margin-bottom: 2rem;
+    }
+
+        .filter-sidebar:hover {
+            box-shadow: 0 10px 32px rgba(0, 0, 0, 0.12);
+        }
+
+        .filter-sidebar h5,
+        .filter-sidebar label {
+            color: #1e3a8a;
+        }
+
+        .filter-sidebar input[type="text"],
+        .filter-sidebar select,
+        .filter-sidebar input[type="range"] {
+            border-radius: 8px;
+            border: 1px solid #d1d5db;
+            transition: border-color 0.3s;
+        }
+
+            .filter-sidebar input[type="text"]:focus,
+            .filter-sidebar select:focus,
+            .filter-sidebar input[type="range"]:focus {
+                border-color: #3b82f6;
+                box-shadow: 0 0 0 0.1rem rgba(59, 130, 246, 0.25);
+            }
+
+    .tag-list .badge {
+        background-color: #f3f4f6;
+        border: 1px solid #d1d5db;
+        border-radius: 20px;
+        font-weight: 500;
+        font-size: 0.85rem;
+        color: #444;
+        padding: 0.4em 0.7em;
+        cursor: pointer;
+        margin: 3px;
+        transition: all 0.3s ease;
+    }
+
+        .tag-list .badge:hover,
+        .tag-list .badge.active {
+            background-color: #1e3a8a;
+            color: #fff;
+        }
+
+    .rating-filter label {
+        cursor: pointer;
+        font-size: 0.9rem;
+        color: #444;
+    }
+
+    .rating-filter input {
+        margin-right: 8px;
+    }
+
+    /* ==== PRODUCT GRID ==== */
+    .product-card {
+        background-color: #fff;
+        border-radius: 16px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+        transition: all 0.3s ease-in-out;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        padding: 1rem;
+    }
+
+    .product-image {
+        height: 200px;
+        object-fit: cover;
+        border-radius: 10px;
+        transition: transform 0.3s ease;
+    }
+
+    .product-card:hover .product-image {
+        transform: scale(1.05);
+    }
+
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .product-description {
+        font-size: 0.9rem;
+        color: #6c757d;
+        line-height: 1.4;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        min-height: 3.8em;
+    }
+
+    .stars-outer {
+        position: relative;
+        display: inline-block;
+        color: #ccc;
+        font-family: FontAwesome;
+    }
+
+    .stars-inner {
+        position: absolute;
+        top: 0;
+        left: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        color: #facc15;
+    }
+
+        .stars-outer::before,
+        .stars-inner::before {
+            content: "★★★★★";
+            letter-spacing: 1px;
+        }
+
+    .new-price {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #28a745;
+    }
+
+    .old-price {
+        text-decoration: line-through;
+        color: #999;
+        font-size: 0.9rem;
+        margin-left: 6px;
+    }
+
+    .btn-cart {
+        background-color: #198754;
+        color: #fff;
+        border-radius: 6px;
+        transition: background-color 0.3s ease;
+
+    }
+
+        .btn-cart:hover {
+            background-color: #146c43;
+            color: aliceblue;
+        }
+
+    .wishlist-btn {
+        background-color: #f8f9fa;
+        color: #dc3545;
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        transition: all 0.3s ease;
+    }
+
+        .wishlist-btn:hover {
+            background-color: #dc3545;
+            color: white;
+        }
+
+    .btn-show-more {
+        background-color: #1e3a8a;
+        color: white;
+        padding: 0.5rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: background-color 0.3s ease;
+    }
+
+        .btn-show-more:hover {
+            background-color: #1d4ed8;
+        }
+
+    .modern-pagination .page-item {
+        margin: 0 3px;
+    }
+
+    .soft-btn {
+        background-color: #1e3a8a;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 6px 14px;
+        font-weight: 500;
+        min-width: 40px;
+        transition: all 0.3s ease-in-out;
+        box-shadow: 0 0 0 transparent;
+    }
+
+        .soft-btn:hover {
+            background-color: #2541a2; /* لون أفتح شوي */
+            color: white;
+            box-shadow: 0 4px 10px rgba(30, 58, 138, 0.25); /* ظل ناعم */
+            transform: translateY(-1px); /* ارتفاع خفيف */
+            text-decoration: none;
+        }
+
+        .soft-btn.current {
+            color: #1e3a8a;
+            background-color: #e0e7ff;
+            font-weight: 600;
+            pointer-events: none;
+            box-shadow: none 0 0 0 1px #1e3a8a;
+        }
+
+    .dots {
+        color: #6b7280;
+        background: transparent;
+        border: none;
+        font-weight: bold;
+        padding: 6px 10px;
+        cursor: default;
+    }
+
+    .page-item.active .page-link,
+    .page-item.disabled .page-link {
+        pointer-events: none;
+    }
+
+
+</style>
+
+<!-- HERO -->
+<div class="hero-wrapper">
+    <h1>🛍️ Welcome to Zaid's Premium Collection</h1>
+    <p>Explore the finest selection of quality products — all tailored to your lifestyle and taste.</p>
+</div>
+<form method="get">
+<!-- MAIN CONTENT -->
+<div class="ms-5 me-5 py-4">
+    <div class="row">
+        <!-- FILTER SIDEBAR -->
+        
+
+        <div class="col-lg-3">
+            <div class="filter-sidebar d-none d-lg-block">
+                <h5 class="filter-title">Filter Products</h5>
+                    <div class="mb-3">
+                        <label class="form-label">Product Name or SKU:</label>
+                        <input type="text" name="searchTerm" class="form-control"
+                               placeholder="Enter product name or SKU..." value="@ViewBag.SearchTerm" />
+                    </div>
+
+
+                   
+                    <!-- Category -->
+                    <div class="mb-3">
+                        <label class="form-label">Category:</label>
+                        <select class="form-select " name="categoryId"
+                                asp-items="@(new SelectList(ViewBag.catagory, "CategoryId", "Name", ViewBag.CategoryId))">
+                            <option value="">Please Select</option>
+                        </select>
+                    </div>
+
+                    <!-- 💰 Price Range -->
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Price Range</label>
+                        <div class="d-flex align-items-center mb-2">
+                            <span class="me-auto">0 JOD</span>
+                            <span id="priceValue" class="fw-bold">@ViewBag.Price</span>
+                            <span class="ms-auto">1000 JOD</span>
+                        </div>
+                        <input type="range" class="form-range" min="0" max="1000" step="1" id="priceRange" name="price" value="@ViewBag.Price" />
+                    </div>
+
+
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">Average Rating</label>
+                    <div class="rating-filter">
+                        <label><input type="radio" name="rating" value="4" /> 4★ & up</label><br />
+                        <label><input type="radio" name="rating" value="3" /> 3★ & up</label><br />
+                        <label><input type="radio" name="rating" value="2" /> 2★ & up</label>
+                    </div>
+                </div>
+
+                <div class="mb-4 form-check">
+                    <input class="form-check-input" type="checkbox" id="inStock" />
+                    <label class="form-check-label fw-semibold" for="inStock">In Stock Only</label>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">Brands / Tags</label>
+                    <div class="tag-list">
+                        <span class="badge">New</span>
+                        <span class="badge">Popular</span>
+                        <span class="badge">Sale</span>
+                        <span class="badge">Exclusive</span>
+                    </div>
+                </div>
+
+                    <!-- ✅ Buttons -->
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Apply Filters</button>
+                        <a href="@Url.Action("Allproduct", "Home")" class="btn btn-outline-secondary">Reset</a>
+                    </div>
+            </div>
+        </div>
+       
+        <!-- PRODUCTS -->
+        <div class="col-lg-9">
+            <div class="row g-4">
+                @foreach (var product in Model)
+                {
+                    var ratingWidth = (3.6 / 5.0) * 100;
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                        <div class="product-card card p-3 text-center">
+                            <div class="position-relative overflow-hidden">
+                                <img src="@product.ImageUrl" alt="@product.Name" class="img-fluid product-image mb-3" />
+                            </div>
+
+                            <div class="product-body card-body p-0">
+                                <h6 class="product-title fw-semibold mb-1">@product.Name</h6>
+                                <p class="product-description">@product.Description</p>
+
+                                <div class="d-flex justify-content-center align-items-center mb-2">
+                                    <div class="stars-outer">
+                                        <div class="stars-inner" style="width: @ratingWidth%;">★★★★★</div>
+                                    </div>
+                                    <small class="text-muted ms-2">(4.0)</small>
+                                </div>
+
+                                <p class="mb-2 text-success small">
+                                    <i class="fa-solid fa-check-circle me-1"></i> In Stock
+                                </p>
+
+                                <p class="mb-3">
+                                    @if (product.DiscountPrice.HasValue)
+                                    {
+                                        <span class="old-price">@product.Price.ToString("N2") JOD</span>
+                                        <span class="new-price">@product.DiscountPrice.Value.ToString("N2") JOD</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="new-price fw-bold">@product.Price.ToString("N2") JOD</span>
+                                    }
+                                </p>
+
+                                    <div class="d-flex gap-2">
+                                        <form asp-controller="CardController1" asp-action="AddToCart" method="post" class="flex-grow-1 d-flex">
+                                            <input type="hidden" name="productId" value="@product.ProductId" />
+                                            <input type="hidden" name="quantity" value="1" min="1" />
+                                            <button class="btn btn-cart w-100" type="submit">
+                                                <i class="fa fa-cart-plus"></i> Add to Cart
+                                            </button>
+                                        </form>
+                                        <button class="btn wishlist-btn px-3" title="Add to Wishlist">
+                                            <i class="fa-regular fa-heart"></i>
+                                        </button>
+                                    </div>
+
+                              
+                                <div class="mt-2">
+                                    <small class="text-muted">SKU: @product.Sku</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+</form>
+<!-- Pagination -->
+@if (ViewBag.TotalPages > 1)
+{
+    <nav>
+        <ul class="pagination justify-content-center modern-pagination">
+            @if (ViewBag.CurrentPage > 1)
+            {
+                <li class="page-item">
+                    <a class="page-link soft-btn"
+                       href="?page=@(ViewBag.CurrentPage - 1)&searchTerm=@ViewBag.SearchTerm&categoryId=@ViewBag.CategoryId">‹</a>
+                </li>
+            }
+
+            @for (int i = 1; i <= ViewBag.TotalPages; i++)
+            {
+                if (
+                i == 1 ||
+                i == ViewBag.TotalPages ||
+                (i >= ViewBag.CurrentPage - 2 && i <= ViewBag.CurrentPage + 2)
+                )
+                {
+                    <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                        <a class="page-link soft-btn @(i == ViewBag.CurrentPage ? "current" : "")"
+                           href="?page=@i&searchTerm=@ViewBag.SearchTerm&categoryId=@ViewBag.CategoryId">@i</a>
+                    </li>
+                }
+                else if (i == ViewBag.CurrentPage - 3 || i == ViewBag.CurrentPage + 3)
+                {
+                    <li class="page-item disabled">
+                        <span class="page-link dots">...</span>
+                    </li>
+                }
+            }
+
+            @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+            {
+                <li class="page-item">
+                    <a class="page-link soft-btn"
+                       href="?page=@(ViewBag.CurrentPage + 1)&searchTerm=@ViewBag.SearchTerm&categoryId=@ViewBag.CategoryId">›</a>
+                </li>
+            }
+        </ul>
+    </nav>
+}
+
+
+<script>
+    const priceRange = document.getElementById("priceRange");
+    const priceValue = document.getElementById("priceValue");
+
+    if (priceRange && priceValue) {
+        priceValue.textContent = priceRange.value;
+
+        priceRange.addEventListener("input", function () {
+            priceValue.textContent = this.value;
+        });
+    }
+</script>
+

@@ -3,12 +3,12 @@ using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using matjerZaid.Models;
+using ECApp.Model;
 using StoreOn.Models;
-using matjerZaid.Models.Database;
-using matjerZaid.Models.Data;
+using ECApp.Model.Database;
+using ECApp.Model.Data;
 
-namespace matjerZaid.Data
+namespace ECApp.Data
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
@@ -386,7 +386,7 @@ namespace matjerZaid.Data
 
                 // العلاقة مع المستخدمين (ربط UserId بجدول AspNetUsers)
                 entity.HasOne(d => d.User)
-                    .WithMany(u => u.Wishlists) // تعديل مهم! لازم يكون عندك ICollection<Wishlist> في ApplicationUser
+                    .WithMany(u => u.Wishlists) // تعديل مهم! لازم يكون عندك ICollection<ECApp> في ApplicationUser
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_wishlist_AspNetUsers_UserId");
@@ -411,14 +411,14 @@ namespace matjerZaid.Data
                     .HasConstraintName("FK_inventorymovement_products");
                 // العلاقة مع المستخدمين (ربط UserId بجدول AspNetUsers)
                 entity.HasOne(d => d.User)
-                    .WithMany(u => u.inventorymovement) // تعديل مهم! لازم يكون عندك ICollection<Wishlist> في ApplicationUser
+                    .WithMany(u => u.inventorymovement) // تعديل مهم! لازم يكون عندك ICollection<ECApp> في ApplicationUser
                     .HasForeignKey(d => d.createdBy)
                     .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_inventorymovement_AspNetUsers_UserId");
             });
 
         }
-        public DbSet<matjerZaid.Models.Data.AllUser> AllUser { get; set; } = default!;
+        public DbSet<global::ECApp.Model.Data.AllUser> AllUser { get; set; } = default!;
 
     }
 }

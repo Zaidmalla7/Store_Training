@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace matjerZaid.Models.Data
+namespace ECApp.Model.Data
 {
     public class Imge
     {

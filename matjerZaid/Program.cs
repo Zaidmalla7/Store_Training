@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
-using matjerZaid.Models;
-using matjerZaid.Data;
+using ECApp.Model;
+using ECApp.Data;
 using StoreOn.Models;
 
-namespace matjerZaid
+namespace ECApp
 {
     public class Program
     {

@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using StoreOn.Models;
 
-namespace matjerZaid.Areas.Identity.Pages.Account
+namespace ECApp.Areas.Identity.Pages.Account
 {
     public class ResetPasswordModel : PageModel
     {

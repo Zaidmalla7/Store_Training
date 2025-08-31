@@ -1,0 +1,54 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@using Microsoft.AspNetCore.Identity
+@using StoreOn.Models
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@{
+    var username = UserManager.GetUserName(User)?.Substring(0, 6);
+
+}
+<div class="dropdown m-2 mt-auto">
+    <a class="" type="button" id="defaultDropdown" data-bs-toggle="dropdown" data-bs-auto-close="true" aria-expanded="false">
+        <div class="d-flex align-items-center gap-2 text-start">
+            <i class="fa-regular fa-user fs-3"></i>
+            <div style="font-size:small">
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <small class="text-muted d-block">@username....</small>
+                }
+                else
+                {
+                    <small class="text-muted d-block">Login</small>
+                }
+                <span class="fw-bold">My Account</span>
+            </div>
+        </div>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="defaultDropdown">
+        @if (SignInManager.IsSignedIn(User))
+        {
+            <li>
+                <a id="manage" class="nav-link dropdown-item"  asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">
+                    <i class="fa-solid fa-sliders"></i> Profile Settings
+                </a>
+            </li>
+            <li>
+                <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                    <button id="logout" type="submit" class="dropdown-item bg-danger text-white">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+                    </button>
+                </form>
+            </li>
+        }
+        else
+        {
+            <li><a class="dropdown-item" id="register" asp-area="Identity" asp-page="/Account/Register"><i class="fas fa-user-plus"></i> Create Account</a></li>
+            <li><a class="nav-link dropdown-item bg-primary text-white" id="login" asp-area="Identity" asp-page="/Account/Login"><i class="fa-solid fa-arrow-right-to-bracket"></i> Login</a></li>
+        }
+    </ul>
+</div>

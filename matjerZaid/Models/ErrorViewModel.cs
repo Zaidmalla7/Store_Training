@@ -1,4 +1,4 @@
-namespace matjerZaid.Models
+namespace ECApp.Model
 {
     public class ErrorViewModel
     {

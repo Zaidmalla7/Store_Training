@@ -1,15 +1,30 @@
 ﻿@inject SignInManager<ApplicationUser> SignInManager
 @{
     var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
+    var source = ViewData["Source"] as string;
+
 }
-<ul class="nav nav-pills flex-column">
-    <li class="nav-item"><a class="nav-link @ManageNavPages.IndexNavClass(ViewContext)" id="profile" asp-page="./Index">Profile</a></li>
-    <li class="nav-item"><a class="nav-link @ManageNavPages.EmailNavClass(ViewContext)" id="email" asp-page="./Email">Email</a></li>
-    <li class="nav-item"><a class="nav-link @ManageNavPages.ChangePasswordNavClass(ViewContext)" id="change-password" asp-page="./ChangePassword">Password</a></li>
+
+<div class="list-group list-group-flush shadow-sm rounded bg-white">
+    <a class="list-group-item list-group-item-action fw-semibold @ManageNavPages.IndexNavClass(ViewContext)" asp-page="./Index" > 
+        👤 Profile
+    </a>
+    <a class="list-group-item list-group-item-action fw-semibold @ManageNavPages.EmailNavClass(ViewContext)" asp-page="./Email" asp-route-source="@source">
+        📧 Email
+    </a>
+    <a class="list-group-item list-group-item-action fw-semibold @ManageNavPages.ChangePasswordNavClass(ViewContext)" asp-page="./ChangePassword" asp-route-source="@source">
+        🔒 Password
+    </a>
     @if (hasExternalLogins)
     {
-        <li id="external-logins" class="nav-item"><a id="external-login" class="nav-link @ManageNavPages.ExternalLoginsNavClass(ViewContext)" asp-page="./ExternalLogins">External logins</a></li>
+        <a class="list-group-item list-group-item-action fw-semibold @ManageNavPages.ExternalLoginsNavClass(ViewContext)" asp-page="./ExternalLogins" asp-route-source="@source">
+            🌐 External Logins
+        </a>
     }
-    <li class="nav-item"><a class="nav-link @ManageNavPages.TwoFactorAuthenticationNavClass(ViewContext)" id="two-factor" asp-page="./TwoFactorAuthentication">Two-factor authentication</a></li>
-    <li class="nav-item"><a class="nav-link @ManageNavPages.PersonalDataNavClass(ViewContext)" id="personal-data" asp-page="./PersonalData">Personal data</a></li>
-</ul>
+    <a class="list-group-item list-group-item-action fw-semibold @ManageNavPages.TwoFactorAuthenticationNavClass(ViewContext)" asp-page="./TwoFactorAuthentication" asp-route-source="@source">
+        ✅ Two-Factor Auth
+    </a>
+    <a class="list-group-item list-group-item-action text-danger fw-semibold @ManageNavPages.PersonalDataNavClass(ViewContext)" asp-page="./PersonalData" asp-route-source="@source">
+        🗑️ Personal Data
+    </a>
+</div>

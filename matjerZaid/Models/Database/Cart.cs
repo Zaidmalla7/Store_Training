@@ -1,6 +1,6 @@
 ﻿using StoreOn.Models;
 
-namespace matjerZaid.Models.Database
+namespace ECApp.Model.Database
 {
     public class Cart
     {

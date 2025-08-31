@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using matjerZaid.Data;
+using ECApp.Data;
 
 #nullable disable
 
-namespace matjerZaid.Migrations
+namespace ECApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     [Migration("20250509165120_createInventorymovement")]

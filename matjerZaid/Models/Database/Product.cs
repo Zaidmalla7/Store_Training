@@ -1,4 +1,4 @@
-﻿namespace matjerZaid.Models.Database
+﻿namespace ECApp.Model.Database
 {
     public class Product
     {

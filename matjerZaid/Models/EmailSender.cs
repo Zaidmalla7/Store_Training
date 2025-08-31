@@ -4,7 +4,7 @@ using System.Net.Mail;
 using System.Net;
 
 
-namespace matjerZaid.Models
+namespace ECApp.Model
 {
     public class EmailSender : IEmailSender
     {
