@@ -16,7 +16,6 @@ namespace EUROPIECE.Controllers
             _context = context;
         }
 
-        // عرض المفضلة
         public async Task<IActionResult> Index()
         {
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
