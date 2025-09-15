@@ -8,15 +8,19 @@ namespace ECApp.Model.Data
         public int CartId { get; set; }
 
         // Product info
+        public int ProductId { get; set; }
+
         public string ProductName { get; set; }
         public decimal Price { get; set; }
         public decimal FinalPrice { get; set; }      // السعر بعد الخصم (أو نفسه إن ما في خصم)
-
+        
 
         // Quantity
         public int Quantity { get; set; }
 
         // Primary image
         public string ImageUrl { get; set; }
+
+
     }
 }

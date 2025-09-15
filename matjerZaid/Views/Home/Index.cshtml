@@ -398,136 +398,157 @@
         color: #0d6efd; /* Bootstrap primary or any accent color */
     }
 
-    .category-item {
-        width: 140px;
-        transition: all 0.4s ease;
-        padding: 15px;
-        border-radius: 16px;
-        background: #ffffff;
-        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
-        position: relative;
-    }
-
-        .category-item:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-            background: #fdfdfd;
-        }
-
-    .category-img {
-        width: 90px;
-        height: 90px;
-        margin: 0 auto 10px;
-        border-radius: 50%;
-        overflow: hidden;
-        border: 3px solid #eaeaea;
-        transition: transform 0.3s ease;
-    }
-
-        .category-img img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-    .category-item:hover .category-img {
-        transform: scale(1.07);
-    }
-
-    .category-item .fw-semibold {
-        font-size: 1rem;
-        color: #1e293b; /* dark slate */
-    }
-
-    .category-item .text-muted {
-        font-size: 0.8rem;
-    }
+ 
+    
 
     
 
+
+
+
+
+
+
     .category-card {
-        background: #fff;
-        border-radius: 20px;
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+        background: linear-gradient(145deg, #ffffff, #f3f6ff);
+        border: 1px solid #e5e9f2;
+        transition: all 0.35s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .category-card::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at top left, rgba(13,110,253,0.1), transparent 70%);
+            transform: rotate(25deg);
+        }
+
+        .category-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 28px rgba(13,110,253,0.15);
+        }
+
+    /* الأيقونة */
+    .icon-circle {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        background: #f0f4ff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        color:white;
         transition: all 0.3s ease;
-        cursor: pointer;
     }
 
-    .category-card:hover {
-        transform: translateY(-6px);
-        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+    .hover-card:hover .icon-circle {
+        background: #0d6efd;
+        color: #fff;
+        transform: scale(1.1) rotate(5deg);
     }
 
-    .category-card img {
-        width: 100%;
-        height: 200px;
-        object-fit: cover;
-        border-radius: 16px;
-    }
-
+    /* النصوص */
     .category-card h6 {
         font-size: 1rem;
+        margin-top: 0.5rem;
     }
 
     .category-card p {
         font-size: 0.85rem;
+        margin: 0;
     }
+    /* ألوان مختلفة */
+    .gradient-health {
+        background: linear-gradient(135deg, #28a745, #a3e635);
+    }
+
+    .gradient-beauty {
+        background: linear-gradient(135deg, #e83e8c, #ffb6f0);
+    }
+
+    .gradient-sports {
+        background: linear-gradient(135deg, #fd7e14, #ffcd39);
+    }
+
+    .gradient-home {
+        background: linear-gradient(135deg, #20c997, #6fffe9);
+    }
+
+    .gradient-tech {
+        background: linear-gradient(135deg, #0d6efd, #39c0ed);
+    }
+
+    .gradient-fashion {
+        background: linear-gradient(135deg, #6f42c1, #d0b3ff);
+    }
+
+    .gradient-books {
+        background: linear-gradient(135deg, #343a40, #6c757d);
+    }
+
+    .gradient-pets {
+        background: linear-gradient(135deg, #ffc107, #ffe082);
+    }
+
+    .gradient-children {
+        background: linear-gradient(135deg, #ff6b6b, #ff9f43);
+    }
+    .categorySwiper .swiper-wrapper {
+        transition-timing-function: linear !important; 
+    }
+
 </style>
 <section class="py-5" style="background-color: #f8f9fa;">
     <div class="container-fluid px-lg-5">
         <div class="row g-4 align-items-stretch">
-            <!-- Left Content -->
             <div class="col-lg-7">
                 <div class="bg-white rounded-4 shadow-lg d-flex flex-column flex-md-row overflow-hidden h-100">
                     <div class="p-5 d-flex flex-column justify-content-center flex-grow-1" data-aos="fade-up" data-aos-delay="200">
-                        <!-- Badge -->
                         <span class="badge bg-warning text-dark px-3 py-2 mb-3 fs-6 shadow-sm">
                             🔥 Summer Sale - 30% OFF
                         </span>
 
-                        <!-- Dynamic Heading -->
                         <h1 class="fw-bold display-4 mb-3 text-dark" id="dynamicHeroText">
                             Stylish Interiors
                         </h1>
 
-                        <!-- Subtitle -->
                         <p class="text-muted fs-5 mb-3">
                             Transform your home into a masterpiece with modern, handcrafted pieces.
                         </p>
 
-                        <!-- Key features with AOS animations -->
                         <ul class="list-unstyled text-muted mb-4">
                             <li data-aos="fade-right" data-aos-delay="100"><i class="fa fa-check text-primary me-2"></i> Free interior consultation</li>
                             <li data-aos="fade-right" data-aos-delay="200"><i class="fa fa-check text-primary me-2"></i> Custom design solutions</li>
                             <li data-aos="fade-right" data-aos-delay="300"><i class="fa fa-check text-primary me-2"></i> Fast & secure delivery</li>
                         </ul>
 
-                        <!-- Button -->
                         <a href="#" class="btn btn-dark rounded-pill px-4 py-2 fw-semibold shadow-sm transition">
                             Explore Now
                         </a>
                     </div>
 
 
-                    <!-- Image -->
                     <div class="d-none d-md-block flex-shrink-0" style="max-width: 50%;">
                         <img src="~/uploads/images/Screenshot 2025-07-29 154822.png" class="img-fluid h-100 w-100 object-fit-cover" alt="Interior Image">
                     </div>
                 </div>
             </div>
 
-            <!-- Right Box -->
             <div class="col-lg-5">
                 <div class="rounded-4 text-white shadow-lg overflow-hidden d-flex flex-column h-100"
                      style="background: linear-gradient(135deg, #6d5c53, #a88778); min-height: 100%;">
 
-                    <!-- Full-height image on top -->
                     <div class="flex-grow-1">
                         <img src="~/uploads/images/nordwood-themes-Nv4QHkTVEaI-unsplash.jpg"
                              class="w-100 h-100 object-fit-cover" alt="Custom Interior" />
                     </div>
 
-                    <!-- Content section -->
                     <div class="p-5 text-center bg-opacity-75 bg-dark">
                         <h4 class="fw-bold mb-2">Tailored Designs</h4>
                         <p class="mb-3">Bring your vision to life with personalized interiors</p>
@@ -538,7 +559,6 @@
         </div>
     </div>
 
-    <!-- Scroll Down Arrow -->
     <div class="text-center mt-4">
         <a href="#mainContent" class="text-dark fs-2">
             <i class="fa-solid fa-angles-down bounce"></i>
@@ -547,37 +567,36 @@
 </section>
 
 
-
-<div class="container my-5">
-    <h2 class="text-center fw-bold mb-4" style="font-size: 2.3rem;">
-        Shop by <span style="color:#0d6efd;">Category</span>
+<div class="mb-5">
+    <h2 class="text-center fw-bold mb-5" style="font-size: 2.3rem;">
+        Shop by <span class="text-primary">Category</span>
     </h2>
 
     <div class="swiper categorySwiper px-2">
         <div class="swiper-wrapper">
             @{
                 var categories = new[] {
-            ("Health & Personal Care", "ChatGPT Image Jun 9, 2025, 04_00_28 PM.png", 27),
-            ("Beauty & Makeup", "Screenshot 2025-06-09 192003.png", 24),
-            ("Sports & Fitness", "Screenshot 2025-06-09 193214.png", 30),
-            ("Home & Kitchen", "Screenshot 2025-06-09 194700.png", 22),
-            ("Electronics & Tech", "Screenshot 2025-06-09 184225.png", 20),
-            ("Fashion & Apparel", "Screenshot 2025-06-09 184218.png", 30),
-            ("Books & Stationery", "Screenshot 2025-06-09 200017.png", 30),
-            ("Pet Supplies", "Screenshot 2025-06-09 193214.png", 30),
-            ("Children", "Screenshot 2025-07-29 171848.png", 30),
-            };
+                        ("Health & Personal Care", "bi-heart-pulse", "gradient-health", 27),
+                        ("Beauty & Makeup", "bi-brush", "gradient-beauty", 24),
+                        ("Sports & Fitness", "bi-bicycle", "gradient-sports", 30),
+                        ("Home & Kitchen", "bi-house-heart", "gradient-home", 22),
+                        ("Electronics & Tech", "bi-laptop", "gradient-tech", 20),
+                        ("Fashion & Apparel", "bi-bag-heart", "gradient-fashion", 30),
+                        ("Books & Stationery", "bi-book", "gradient-books", 30),
+                        ("Pet Supplies", "bi-bag-dash", "gradient-pets", 30),
+                        ("Children", "bi-emoji-smile", "gradient-children", 30),
+                        };
             }
 
             @foreach (var category in categories)
             {
                 <div class="swiper-slide">
-                    <div class="category-card text-center p-3 mb-2">
-                        <div class="category-img mb-3">
-                            <img src="~/uploads/images/@category.Item2" alt="@category.Item1" />
+                    <div class="category-card text-center mb-4 mt-2 p-4 rounded-4 hover-card">
+                        <div class="icon-circle mb-3 mx-auto @category.Item3">
+                            <i class="@category.Item2"></i>
                         </div>
                         <h6 class="fw-bold text-dark mb-1">@category.Item1</h6>
-                        <p class="text-muted small mb-0">@category.Item3 items</p>
+                        <p class="text-muted small mb-0">@category.Item4 items</p>
                     </div>
                 </div>
             }
@@ -598,12 +617,10 @@
                 <div class="swiper-slide">
                     <div class="card p-3 text-center product-card">
                         <img src="@product.ImageUrl" alt="@product.Name" class="img-fluid product-image mb-3" />
-
                         <div class="card-body p-0">
                             <h6 class="fw-semibold mb-1">@product.Name</h6>
                             <p class="product-description">@product.Description</p>
 
-                            <!-- Rating -->
                             <div class="d-flex justify-content-center align-items-center mb-2">
                                 <div class="stars-outer position-relative">
                                     <div class="stars-inner" style="width: @ratingWidth%;">★★★★★</div>
@@ -611,12 +628,10 @@
                                 <small class="text-muted ms-2">(4.0)</small>
                             </div>
 
-                            <!-- Availability -->
                             <p class="mb-2 text-success small"><i class="fa-solid fa-check-circle me-1"></i> In Stock</p>
 
-                            <!-- Price -->
                             <p class="mb-3">
-                                @if (product.DiscountPrice.HasValue)
+                                @if (product.DiscountPrice.HasValue && product.DiscountPrice.Value != 0)
                                 {
                                     <span class="old-price">@product.Price.ToString("N2") JOD</span>
                                     <span class="new-price">@product.DiscountPrice.Value.ToString("N2") JOD</span>
@@ -627,16 +642,19 @@
                                 }
                             </p>
 
-                            <!-- Buttons -->
-                            <div class="d-flex gap-2">
-                                <button class="btn btn-cart flex-grow-1">
+                            <div class="d-flex gap-2 mb-2">
+                                <button class="btn btn-primary  flex-grow-1 add-to-cart" data-id="@product.ProductId">
                                     <i class="fa fa-cart-plus"></i> Add to Cart
                                 </button>
-                                <button class="btn wishlist-btn px-3" title="Add to Wishlist">
+                                <button class="btn wishlist-btn px-3 add-to-wishlist" data-id="@product.ProductId" title="Add to Wishlist">
                                     <i class="fa-regular fa-heart"></i>
                                 </button>
                             </div>
-
+                            <a asp-action="DitalsProduct" asp-controller="Home" asp-route-ProductId="@product.ProductId"
+                               class="btn btn-outline-primary rounded d-flex align-items-center justify-content-center gap-2 px-3 py-2 shadow-sm"
+                               style="transition: all 0.2s ease-in-out;">
+                                <i class="fa-solid fa-eye"></i> View Details
+                            </a>
                             <!-- SKU -->
                             <div class="mt-2">
                                 <small class="text-muted">SKU: @product.Sku</small>
@@ -652,7 +670,6 @@
     </div>
 </div>
 
-<!-- ✅ Store Features with Animation and Hover Effects -->
 <div class="container my-5">
     <div class="row text-center g-4">
 
@@ -686,14 +703,12 @@
 
     </div>
 </div>
-<!-- 🌊 Decorative Wave Top -->
 <div style="margin-bottom: -5px;">
     <svg viewBox="0 0 1440 100" style="display: block;" xmlns="http://www.w3.org/2000/svg">
         <path fill="#f4f7fc" d="M0,96L80,85.3C160,75,320,53,480,37.3C640,21,800,11,960,26.7C1120,43,1280,85,1360,106.7L1440,128L1440,0L1360,0C1280,0,1120,0,960,0C800,0,640,0,480,0C320,0,160,0,80,0L0,0Z"></path>
     </svg>
 </div>
 
-<!-- 🌟 Why Shop With Us Section -->
 <section class="py-5" style="background-color: #f4f7fc;">
     <div class="container">
         <h2 class="text-center fw-bold mb-5" style="font-size: 2.3rem;">
@@ -701,7 +716,6 @@
         </h2>
 
         <div class="row g-4">
-            <!-- Card 1 -->
             <div class="col-md-6" data-aos="fade-right" data-aos-delay="100">
                 <div class="d-flex bg-white shadow-sm rounded-4 p-4 align-items-start h-100">
                     <div class="fs-2 text-primary me-3">
@@ -714,7 +728,6 @@
                 </div>
             </div>
 
-            <!-- Card 2 -->
             <div class="col-md-6" data-aos="fade-left" data-aos-delay="200">
                 <div class="d-flex bg-white shadow-sm rounded-4 p-4 align-items-start h-100">
                     <div class="fs-2 text-primary me-3">
@@ -727,7 +740,6 @@
                 </div>
             </div>
 
-            <!-- Card 3 -->
             <div class="col-md-6" data-aos="fade-right" data-aos-delay="300">
                 <div class="d-flex bg-white shadow-sm rounded-4 p-4 align-items-start h-100">
                     <div class="fs-2 text-primary me-3">
@@ -740,7 +752,6 @@
                 </div>
             </div>
 
-            <!-- Card 4 -->
             <div class="col-md-6" data-aos="fade-left" data-aos-delay="400">
                 <div class="d-flex bg-white shadow-sm rounded-4 p-4 align-items-start h-100">
                     <div class="fs-2 text-primary me-3">
@@ -755,20 +766,17 @@
         </div>
     </div>
 </section>
-<!-- 🌊 Decorative Top Curve -->
 <div style="margin-bottom: -5px;">
     <svg viewBox="0 0 1440 100" xmlns="http://www.w3.org/2000/svg">
         <path fill="#ffffff" d="M0,64L80,58.7C160,53,320,43,480,53.3C640,64,800,96,960,96C1120,96,1280,64,1360,48L1440,32L1440,0L1360,0C1280,0,1120,0,960,0C800,0,640,0,480,0C320,0,160,0,80,0L0,0Z"></path>
     </svg>
 </div>
 
-<!-- 🛒 How It Works Section -->
 <section class="py-5 bg-white">
     <div class="container text-center">
         <h2 class="fw-bold mb-5">How It <span class="text-primary">Works</span></h2>
 
         <div class="row g-4 justify-content-center">
-            <!-- Step 1 -->
             <div class="col-md-3" data-aos="fade-up" data-aos-delay="100">
                 <div class="p-4 border rounded-4 h-100">
                     <div class="fs-1 text-primary mb-3"><i class="fa-solid fa-magnifying-glass"></i></div>
@@ -777,7 +785,6 @@
                 </div>
             </div>
 
-            <!-- Step 2 -->
             <div class="col-md-3" data-aos="fade-up" data-aos-delay="200">
                 <div class="p-4 border rounded-4 h-100">
                     <div class="fs-1 text-primary mb-3"><i class="fa-solid fa-cart-shopping"></i></div>
@@ -786,7 +793,6 @@
                 </div>
             </div>
 
-            <!-- Step 3 -->
             <div class="col-md-3" data-aos="fade-up" data-aos-delay="300">
                 <div class="p-4 border rounded-4 h-100">
                     <div class="fs-1 text-primary mb-3"><i class="fa-solid fa-credit-card"></i></div>
@@ -795,7 +801,6 @@
                 </div>
             </div>
 
-            <!-- Step 4 -->
             <div class="col-md-3" data-aos="fade-up" data-aos-delay="400">
                 <div class="p-4 border rounded-4 h-100">
                     <div class="fs-1 text-primary mb-3"><i class="fa-solid fa-box-open"></i></div>
@@ -806,13 +811,10 @@
         </div>
     </div>
 </section>
-<!-- 🌟 About Us Section with Parallax + Overlay -->
 <section class="position-relative text-white" style="background-image: url('https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&w=1600&q=80'); background-size: cover; background-position: center; background-attachment: fixed; padding: 6rem 2rem;">
 
-    <!-- Overlay -->
     <div style="position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.6); z-index:1;"></div>
 
-    <!-- Content -->
     <div class="position-relative text-center" style="max-width: 800px; margin: 0 auto; z-index:2;">
         <h2 class="fw-bold mb-4" style="font-size: 2.8rem;">About Us</h2>
         <p class="fs-5 text-white-50 mb-4">
@@ -831,7 +833,6 @@
         </div>
     </div>
 </section>
-<!-- 💬 Continuous Auto-Sliding Testimonials -->
 <section class="py-5" style="background: #f8f9fc;">
     <div class="container">
         <h2 class="text-center fw-bold mb-5" style="font-size: 2.3rem;">Customer Feedback</h2>
@@ -839,7 +840,6 @@
         <div class="swiper continuousTestimonialsSwiper">
             <div class="swiper-wrapper">
 
-                <!-- Slide 1 -->
                 <div class="swiper-slide">
                     <div class="bg-white p-4 rounded-4 shadow-sm mx-3 h-100" style="min-height: 260px;">
                         <div class="d-flex align-items-center mb-3">
@@ -854,7 +854,6 @@
                     </div>
                 </div>
 
-                <!-- Slide 2 -->
                 <div class="swiper-slide">
                     <div class="bg-white p-4 rounded-4 shadow-sm mx-3 h-100" style="min-height: 260px;">
                         <div class="d-flex align-items-center mb-3">
@@ -869,7 +868,6 @@
                     </div>
                 </div>
 
-                <!-- Slide 3 -->
                 <div class="swiper-slide">
                     <div class="bg-white p-4 rounded-4 shadow-sm mx-3 h-100" style="min-height: 260px;">
                         <div class="d-flex align-items-center mb-3">
@@ -883,7 +881,6 @@
                         <div class="stars-outer"><div class="stars-inner" style="width: 90%;">★★★★★</div></div>
                     </div>
                 </div>
-                <!-- Slide 3 -->
                 <div class="swiper-slide">
                     <div class="bg-white p-4 rounded-4 shadow-sm mx-3 h-100" style="min-height: 260px;">
                         <div class="d-flex align-items-center mb-3">
@@ -897,7 +894,6 @@
                         <div class="stars-outer"><div class="stars-inner" style="width: 90%;">★★★★★</div></div>
                     </div>
                 </div>
-                <!-- ممكن تضيف سلايد رابع، خامس، إلخ بنفس الشكل -->
             </div>
         </div>
     </div>
@@ -905,7 +901,6 @@
 <section class="py-5" style="background-color: #f5f7fa;">
     <div class="row m-0 align-items-center justify-content-center flex-column flex-lg-row text-center text-lg-start px-4 px-lg-5 gap-5">
 
-        <!-- Text Side -->
         <div class="col-lg-6">
             <h2 class="fw-bold display-5 text-dark mb-3">
                 Need help?
@@ -923,7 +918,6 @@
             </div>
         </div>
 
-        <!-- Image Side -->
         <div class="col-lg-5">
             <img src="https://cdn-icons-png.flaticon.com/512/6346/6346921.png"
                  alt="Customer Support"
@@ -983,27 +977,32 @@
         slidesPerView: 1,
         spaceBetween: 20,
         loop: true,
-        speed: 3000, // سرعة الحركة (كل دورة)
+        speed: 3000, 
         autoplay: {
-            delay: 0, // لا يوجد تأخير
-            disableOnInteraction: false, // يواصل التحريك حتى عند تفاعل المستخدم
+            delay: 0, 
+            disableOnInteraction: false, 
         },
-        allowTouchMove: false, // يمنع التوقف عند السحب
+        allowTouchMove: false, 
         breakpoints: {
             768: { slidesPerView: 2 },
             1200: { slidesPerView: 3 }
         }
 
     });
-      var swiper = new Swiper(".categorySwiper", {
+
+
+        var swiper = new Swiper(".categorySwiper", {
         loop: true,
+        speed: 4000,          
         autoplay: {
-            delay: 3000,
+            delay: 0,
             disableOnInteraction: false,
         },
-        centeredSlides: true, // يخلي العرض بالنص
+        slidesPerView: 5,
         spaceBetween: 25,
-        slidesPerView: 4.5, // يعرض 4 كروت كاملة + جزء من الخامس
+        freeMode: true,
+        freeModeMomentum: false,
+        centeredSlides: false, 
         breakpoints: {
             0: {
                 slidesPerView: 1.3,
@@ -1021,4 +1020,114 @@
     });
 
 
+
+     $(".add-to-cart").click(function () {
+        var productId = $(this).data("id");
+
+        $.ajax({
+            url: '/CardController1/AddToCart',
+            type: 'POST',
+            data: { productId: productId, quantity: 1 },
+            success: function (res) {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'bottom-end',
+                    showConfirmButton: false,
+                    timer: 2500,
+                    timerProgressBar: true,
+                    background: res.success ? '#4CAF50' : '#F44336', // green or red
+                    color: '#fff',
+                    customClass: {
+                        popup: 'colored-toast'
+                    },
+                    didOpen: (toast) => {
+                        toast.onmouseenter = Swal.stopTimer;
+                        toast.onmouseleave = Swal.resumeTimer;
+                    }
+                });
+
+                if (res.success) {
+                    Toast.fire({
+                        icon: 'success',
+                        title: res.message
+                    });
+                } else {
+                    Toast.fire({
+                        icon: 'error',
+                        title: res.message
+                    });
+                }
+            },
+            error: function () {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'bottom-end',
+                    showConfirmButton: false,
+                    timer: 2500,
+                    timerProgressBar: true,
+                    background: '#F44336', // red
+                    color: '#fff'
+                });
+
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Something went wrong. Please try again.'
+                });
+            }
+        });
+    });
+
+
+
+    $(".add-to-wishlist").click(function () {
+        var productId = $(this).data("id");
+
+        $.ajax({
+            url: '/WishlistController1/AddToWishlist',
+            type: 'POST',
+            data: { productId: productId },
+            success: function (res) {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'bottom-end',
+                    showConfirmButton: false,
+                    timer: 2500,
+                    timerProgressBar: true,
+                    background: res.success ? '#4CAF50' : '#F44336', // green or red
+                    color: '#fff'
+                });
+
+                if (res.success) {
+                    Toast.fire({
+                        icon: 'success',
+                        title: res.message
+                    });
+                } else {
+                    Toast.fire({
+                        icon: 'error',
+                        title: res.message
+                    });
+                }
+            },
+            error: function () {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'bottom-end',
+                    showConfirmButton: false,
+                    timer: 2500,
+                    timerProgressBar: true,
+                    background: '#F44336',
+                    color: '#fff'
+                });
+
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Network error, please try again.'
+                });
+            }
+        });
+    });
+
+
+       
 </script>

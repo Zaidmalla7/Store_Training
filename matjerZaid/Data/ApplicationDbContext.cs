@@ -22,7 +22,7 @@ namespace ECApp.Data
 
         public virtual DbSet<Coupon> Coupons { get; set; }
 
-        public virtual DbSet<Inventory> Inventories { get; set; }
+        public virtual DbSet<Inventory> Inventory { get; set; }
 
         public virtual DbSet<Order> Orders { get; set; }
 
@@ -46,6 +46,7 @@ namespace ECApp.Data
         public virtual DbSet<Inventorymovement> inventorymovements { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
             base.OnModelCreating(modelBuilder);
             var admin = new IdentityRole
             {

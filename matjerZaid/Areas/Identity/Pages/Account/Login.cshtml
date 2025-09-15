@@ -3,7 +3,6 @@
 
 @{
     ViewData["Title"] = "Log in";
-    Layout = "_LayoutLR";
 }
 
 
@@ -79,7 +78,46 @@
                                             <a id="resend-confirmation" asp-page="./ResendEmailConfirmation">Resend email confirmation</a>
                                         </p>
                                     </div>
+                                <div>
+                                    <div class="text-center">
+                                 
+
+                                    </div>
+
+                                </div>
+
                                 </form>
+                            <div class="col-md-6 col-md-offset-2">
+                                <section>
+                                    <hr />
+                                    @{
+                                        if ((Model.ExternalLogins?.Count ?? 0) == 0)
+                                        {
+                                            <div>
+                                                <p>
+                                                    There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">
+                                                        article
+                                                        about setting up this ASP.NET application to support logging in via external services
+                                                    </a>.
+                                                </p>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
+                                                <div>
+                                                    <p>
+                                                        @foreach (var provider in Model.ExternalLogins!)
+                                                        {
+                                                            <button type="submit" class="btn btn-danger" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account"> <i class="fab fa-google"></i> Sign in with @provider.DisplayName</button>
+                                                        }
+                                                    </p>
+                                                </div>
+                                            </form>
+                                        }
+                                    }
+                                </section>
+                            </div>
                             </div>
                         </div>
                     </div>
@@ -88,4 +126,5 @@
         </div>
         <!-- Jumbotron -->
     </section>
+
     <!-- Section: Design Block -->

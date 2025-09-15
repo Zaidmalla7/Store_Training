@@ -1,42 +1,52 @@
 ﻿using ECApp.Data;
 using ECApp.Model.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using StoreOn.Models;
 
 namespace ECApp.Controllers
 {
+    [Route("ManagerAppController1/[controller]/[action]")]
+    [Authorize(Roles = "Admin")]
     public class AllUserController1 : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
-        public AllUserController1(ApplicationDbContext context)
+        public AllUserController1(UserManager<ApplicationUser> userManager,
+                                  SignInManager<ApplicationUser> signInManager,
+                                  ApplicationDbContext context)
         {
+            _userManager = userManager;
+            _signInManager = signInManager;
             _context = context;
         }
+
         public async Task<ActionResult> AllUser()
         {
             ViewBag.Adminnumber = await _context.UserRoles.Where(x => x.RoleId == "9A2E45B8-6D7A-4D99-8A4F-B1E2A3F7E9D1").CountAsync();
             ViewBag.clientnumber = await _context.UserRoles.Where(x => x.RoleId == "A57C1B60-5D2B-4E23-9C1A-FAE928D76C23").CountAsync();
             ViewBag.salesnumber = await _context.UserRoles.Where(x => x.RoleId == "B83D85C9-7E89-4D45-BB98-4A1D7B96C123").CountAsync();
-
-            List<Model.Data.AllUser> list = new List<Model.Data.AllUser>();
-            list  = (from obj in await _context.Users.ToListAsync()
-                    join obj1 in await _context.UserRoles.ToListAsync() on obj.Id equals obj1.UserId
-                    join obj2 in await _context.Roles.ToListAsync() on obj1.RoleId equals obj2.Id
-                    select new Model.Data.AllUser
-                    {
-                        FirstName = obj.FirstName,
-                        LastName = obj.LastName,
-                        Address = obj.Address,
-                        CreateAt = obj.CreateAt,
-                        Email = obj.Email,
-                        Id = obj.Id,
-                        PhoneNumber = obj.PhoneNumber,
-                        EmailConfirmed = obj.EmailConfirmed,
-                        RolsName = obj2.Name
-                    }
-                    ).ToList();
+            var list = await (from user in _context.Users
+                              join userRole in _context.UserRoles on user.Id equals userRole.UserId
+                              join role in _context.Roles on userRole.RoleId equals role.Id
+                              select new Model.Data.AllUser
+                              {
+                                  FirstName = user.FirstName,
+                                  LastName = user.LastName,
+                                  Address = user.Address,
+                                  CreateAt = user.CreateAt,
+                                  Email = user.Email,
+                                  Id = user.Id,
+                                  PhoneNumber = user.PhoneNumber,
+                                  EmailConfirmed = user.EmailConfirmed,
+                                  RolsName = role.Name
+                              })
+                             .AsNoTracking()
+                             .ToListAsync();
             return View(list);
         }
        [HttpPost]
@@ -119,22 +129,27 @@ namespace ECApp.Controllers
           
         }
 
-        public async Task<ActionResult> SaveRole(string SelectedRole , string ID) {
+        [HttpPost]
+        public async Task<ActionResult> SaveRole(string SelectedRole, string ID)
+        {
+            var user = await _userManager.FindByIdAsync(ID);
 
-            var RolsID = await _context.Roles.Where(r => r.Name == SelectedRole).Select(r => r.Id)
-                .FirstOrDefaultAsync();
-         //   var userRoleId = await _context.UserRoles.Where(x => x.UserId == ID).Select(x => x.RoleId)
-             //   .FirstOrDefaultAsync();
-            // حذف الأدوار القديمة للمستخدم
-            var oldRoles = _context.UserRoles.Where(x => x.UserId == ID);
-            _context.UserRoles.RemoveRange(oldRoles);
-            var newUserRole = new IdentityUserRole<string>
+            if (user == null)
             {
-                RoleId = RolsID,
-                UserId = ID
-            };
-            _context.UserRoles.Add(newUserRole);
-            await _context.SaveChangesAsync();
+                return NotFound();
+            }
+
+            var roles = await _userManager.GetRolesAsync(user);
+
+            if (roles.Any())
+            {
+                await _userManager.RemoveFromRolesAsync(user, roles);
+            }
+
+            await _userManager.AddToRoleAsync(user, SelectedRole);
+
+            await _userManager.UpdateSecurityStampAsync(user);
+
             return RedirectToAction("AllUser");
         }
     }

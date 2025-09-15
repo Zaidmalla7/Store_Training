@@ -1,0 +1,153 @@
+﻿@model ECApp.Model.Database.Order;
+@{
+    string orderStatus = Model.Status.Name;
+
+    var steps = new List<(string Key, string Title, string Icon, string Color)>
+    {
+        ("Pending", "Pending", "fa-hourglass-start", "warning"),
+        ("Confirmed", "Confirmed", "fa-circle-check", "primary"),
+        ("Shipped", "Shipped", "fa-box", "info"),
+        ("OutForDelivery", "Out for Delivery", "fa-truck", "orange"), // custom
+        ("Delivered", "Delivered", "fa-gift", "success")
+    };
+
+    var statusIndex = steps.FindIndex(s =>
+        s.Key.Equals(orderStatus, StringComparison.OrdinalIgnoreCase));
+
+    var progressPercent = ((statusIndex + 1) * 100) / steps.Count;
+    var currentStep = steps[statusIndex]; 
+}
+
+<div class="container py-5">
+    <h2 class="fw-bold mb-4 text-center">Track Your Order</h2>
+
+    <!-- Order Info -->
+    <div class="card mb-4 shadow-sm border-0 rounded-4">
+        <div class="card-body d-flex justify-content-between align-items-center">
+            <div>
+                <h5 class="fw-bold mb-2">Order #@Model.OrderId</h5>
+                <p class="mb-1 text-muted"><i class="bi bi-calendar-event me-1"></i> @Model.CreatedAt</p>
+                <p class="mb-0 text-muted"><i class="bi bi-wallet2 me-1"></i> Cash on Delivery</p>
+            </div>
+          <div class="text-end">
+    <span class="badge bg-@currentStep.Color text-white px-3 py-2 fs-6 shadow-sm">
+        @currentStep.Title
+    </span>
+</div>
+        </div>
+    </div>
+
+    <!-- Order Progress -->
+   <div class="mb-5">
+    <h5 class="fw-bold mb-5">Order Progress</h5>
+    <div class="position-relative">
+        <!-- خط التقدم -->
+        <div class="progress" style="height: 12px;">
+            <div class="progress-bar bg-@steps[statusIndex].Color" style="width:@progressPercent%;"></div>
+        </div>
+
+        <!-- الأيقونات -->
+        <div class="d-flex justify-content-between position-absolute top-50 start-0 w-100"
+             style="transform: translateY(-50%);">
+
+            @for (int i = 0; i < steps.Count; i++)
+            {
+                var step = steps[i];
+
+                bool isCompleted = i < statusIndex;   
+                bool isCurrent   = i == statusIndex;  
+                bool isPending   = i > statusIndex;   
+
+                <div class="text-center" style="width:20%;">
+                    <div class="rounded-circle 
+                        @(isCompleted ? "bg-success text-white shadow" : 
+                          isCurrent ? $"bg-{step.Color} text-white shadow" : 
+                          "bg-light border text-muted shadow-sm") 
+                        d-flex align-items-center justify-content-center mx-auto"
+                         style="width: 45px; height: 45px;">
+                        
+                        @if (isCompleted)
+                        {
+                            <i class="fa-solid fa-check"></i>  
+                        }
+                        else
+                        {
+                            <i class="fa-solid @step.Icon"></i>
+                        }
+                    </div>
+                    <small class="d-block mt-2 fw-semibold 
+                        @(isCompleted ? "text-success" : isCurrent ? $"text-{step.Color}" : "")">
+                        @step.Title
+                    </small>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+    <!-- Delivery Info -->
+    <div class="card mb-4 shadow-sm border-0 rounded-4">
+        <div class="card-body">
+            <h5 class="fw-bold mb-3"><i class="bi bi-geo-alt-fill text-danger me-2"></i>Delivery Information</h5>
+            <p class="mb-1"><strong>Address:</strong> @Model.ShippingAddress</p>
+            <p class="mb-0"><strong>Estimated Delivery:</strong> Sep 7 - Sep 10, 2025</p>
+        </div>
+    </div>
+
+    <!-- Products -->
+    <div class="card shadow-sm border-0 rounded-4 mb-4">
+        <div class="card-body">
+            <h5 class="fw-bold mb-3"><i class="bi bi-bag-check-fill text-primary me-2"></i>Products</h5>
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Product</th>
+                            <th>Qty</th>
+                            <th>Price</th>
+                            <th>Ditals</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.OrderDetails)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <img src="@item.Product.ProductImages.First().ImageUrl"
+                                             class="img-thumbnail rounded me-3"
+                                             style="width: 60px; height: 60px; object-fit: cover;"
+                                             alt="Product">
+                                        <span>@item.Product.Name</span>
+                                    </div>
+                                </td>
+                                <td>@item.Quantity</td>
+                                <td>
+                                    @(item.Product.DiscountPrice != 0 ? item.Product.DiscountPrice.Value.ToString("N2") : item.Product.Price.ToString("N2"))
+                                </td>
+                                <td>
+                                    <a asp-action="DitalsProduct"
+                                       asp-controller="Home"
+                                       asp-route-ProductId="@item.ProductId"
+                                       class="text-primary fs-5">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </a>
+                                </td>
+                                <td>$@item.Subtotal.ToString("N2")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="text-end mt-3">
+                <p class="fw-bold fs-5 mb-0">Order Total: <span class="text-primary">$@Model.TotalPrice.ToString("N2")</span></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="text-center mt-4">
+        <a onclick="history.back()" class="btn btn-outline-primary rounded-pill px-4 me-2">Back to Orders</a>
+        <a href="/Home" class="btn btn-primary rounded-pill px-4">Continue Shopping</a>
+    </div>
+</div>

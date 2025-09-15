@@ -1,4 +1,4 @@
-﻿@model List<ECApp.Model.Data.Card>
+﻿@model ECApp.Model.Data.CartCheckoutVM;
 
 @{
     ViewData["Title"] = "Shopping Cart";
@@ -59,7 +59,6 @@
             background-color: #f1f1f1;
         }
 
-
     .btn-red {
         background-color: #dc3545;
         color: white;
@@ -110,44 +109,96 @@
             text-decoration: none;
         }
 
-    
+    /* رسالة السلة الفارغة */
+    .alert-empty-cart {
+        background: #dbeafe; /* أزرق فاتح */
+        color: #1e3a8a; /* أزرق غامق */
+        border: 1px solid #bfdbfe;
+        border-radius: 12px;
+        padding: 40px 20px;
+        max-width: 500px;
+        margin: 80px auto;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+    }
 
+        .alert-empty-cart:hover {
+            background: #bfdbfe;
+        }
 
+        .alert-empty-cart .icon-circle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #60a5fa; /* دائرة زرقاء ناعمة */
+            margin: 0 auto 15px;
+            font-size: 1.8rem;
+            color: #fff;
+        }
+
+        .alert-empty-cart h4 {
+            font-size: 1.5rem;
+        }
+
+        .alert-empty-cart p {
+            color: #1e40af;
+            font-size: 1rem;
+        }
 </style>
 
 <div class="container my-5">
     <div class="cart-header">🛒 Shopping Cart</div>
 
-    @if (Model == null || !Model.Any())
+    @if (Model.CartItems == null || !Model.CartItems.Any())
     {
-        <div class="alert alert-warning text-center fs-5 py-5">Your cart is currently empty.</div>
+        <div class="alert-empty-cart text-center">
+            <div class="icon-circle mb-3">
+                <i class="fa fa-shopping-cart"></i>
+            </div>
+            <h4 class="fw-bold mb-2">Your Cart is Empty</h4>
+            <p class="mb-3">Browse products and add them to your cart.</p>
+            <a href="/Home/Allproduct" class="btn btn-light btn-sm px-4">
+                <i class="fa fa-plus me-1"></i> Start Shopping
+            </a>
+        </div>
     }
     else
     {
         <div class="row">
             <div class="col-lg-8">
-                @foreach (var item in Model)
+                @foreach (var item in Model.CartItems)
                 {
                     var subtotal = item.FinalPrice * item.Quantity;
                     total += subtotal;
-                    <div class="cart-item d-flex justify-content-between align-items-center" id="row-@item.CartId">
-                        <div class="d-flex align-items-center gap-3">
-                            <img src="@item.ImageUrl" alt="@item.ProductName" />
-                            <div>
-                                <div class="fw-semibold d-flex align-items-center gap-2">
-                                    @item.ProductName
-                                   
-                                </div>
-                                <div class="price-info mt-2">
+                    <div class="cart-item row align-items-center" id="row-@item.CartId">
+                        <div class="col-4 col-md-2">
+                            <img src="@item.ImageUrl" alt="@item.ProductName" class="img-fluid rounded border" />
+                        </div>
+
+                        <div class="col-8 col-md-4">
+                            <div class="fw-semibold">@item.ProductName</div>
+                            <div class="price-info mt-2">
+                                @if (item.FinalPrice < item.Price)
+                                {
                                     <div>
                                         <strong class="text-success">@item.FinalPrice.ToString("C")</strong>
                                         <small class="ms-2"><del>@item.Price.ToString("C")</del></small>
                                     </div>
-                                    <small class="text-muted">Core Deposit: @((item.Price - item.FinalPrice).ToString("C"))</small>
-                                </div>
+                                }
+                                else
+                                {
+                                    <div>
+                                        <strong class="text-success">@item.Price.ToString("C")</strong>
+                                    </div>
+                                }
+
                             </div>
                         </div>
-                        <div class="d-flex align-items-center gap-3">
+
+                        <div class="col-12 col-md-6 mt-3 mt-md-0 d-flex flex-wrap justify-content-between align-items-center gap-2">
                             <div class="btn-group border" role="group">
                                 <button class="btn qty-btn text-danger" data-id="@item.CartId" data-action="decrease" title="نقص">
                                     <strong>-</strong>
@@ -158,58 +209,78 @@
                                 </button>
                             </div>
 
-                            <div id="subtotal-@item.CartId">@subtotal.ToString("C")</div>
-                            <button class="btn btn-red btn-sm remove-btn" data-id="@item.CartId" title="Remove"><i class="fas fa-trash"></i></button>
+                            <div id="subtotal-@item.CartId">@subtotal.ToString("N2")</div>
+
+                            <a asp-action="DitalsProduct"
+                               asp-controller="Home"
+                               asp-route-ProductId="@item.ProductId"
+                               class="text-primary fs-5">
+                                <i class="fa-solid fa-eye"></i>
+                            </a>
+
+                            <button class="btn btn-red btn-sm remove-btn" data-id="@item.CartId" title="Remove">
+                                <i class="fas fa-trash"></i>
+                            </button>
                         </div>
                     </div>
+
                 }
 
                 <div class="mt-4 d-flex justify-content-between">
                     <a href="/" class="btn btn-outline-secondary"><i class="fas fa-arrow-left me-1"></i> Continue Shopping</a>
                 </div>
             </div>
-
             <div class="col-lg-4 mt-4 mt-lg-0">
-                <div class="mb-4">
-                    <label class="form-label">Order Note</label>
-                    <textarea class="form-control note-box" placeholder="Any special instructions?"></textarea>
-                </div>
-
-                <div class="mb-4">
-                    <label class="form-label">Promo Code</label>
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Enter promo code">
-                        <button class="btn btn-dark">Apply</button>
+                <form asp-action="Checkout" asp-controller="OrderController1" method="post">
+                    <div class="mb-4">
+                        <label class="form-label">Shipping Address</label>
+                        <textarea class="form-control note-box"
+                                  asp-for="CheckoutInfo.ShippingAddress"
+                                  placeholder="Enter your shipping address"></textarea>
+                        <span class="text-danger" asp-validation-for="CheckoutInfo.ShippingAddress"></span>
                     </div>
-                </div>
-
-                <div class="cart-summary">
-                    <div class="summary-title">Cart Totals</div>
-                    <ul class="list-group list-group-flush mb-2">
-                        <li class="list-group-item d-flex justify-content-between">
-                            <span>Subtotal:</span>
-                            <span id="cart-total">@total.ToString("C")</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between">
-                            <span>Tax:</span>
-                            <span>$0.00</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between fw-bold">
-                            <span>Total:</span>
-                            <span id="cart-total-final">@total.ToString("C")</span>
-                        </li>
-                    </ul>
-                    <div class="affirm mt-2">
-                        Starting at <strong>$414/mo</strong> with <a href="#">Affirm</a>
+                    <div class="mb-4">
+                        <label class="form-label">Order Note</label>
+                        <textarea class="form-control note-box" placeholder="Any special instructions?"></textarea>
                     </div>
-                    <a asp-action="Checkout" class="btn btn-red w-100 mt-3">PROCEED TO CHECKOUT</a>
-                </div>
+
+                    <div class="mb-4">
+                        <label class="form-label">Promo Code</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Enter promo code">
+                            <button class="btn btn-dark">Apply</button>
+                        </div>
+                    </div>
+
+                    <div class="cart-summary">
+                        <div class="summary-title">Cart Totals</div>
+                        <ul class="list-group list-group-flush mb-2">
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span>Subtotal:</span>
+                                <span id="cart-total">@total.ToString("C")</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span>Tax:</span>
+                                <span>$0.00</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between fw-bold">
+                                <span>Total:</span>
+                                <span id="cart-total-final">@total.ToString("C")</span>
+                            </li>
+                        </ul>
+                        <div class="affirm mt-2">
+                            Starting at <strong>$414/mo</strong> with <a href="#">Affirm</a>
+                        </div>
+                        <button type="submit" class="btn btn-red w-100 mt-3">
+                            PROCEED TO CHECKOUT
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     }
 </div>
 
-@section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
@@ -287,11 +358,22 @@
                             success: function () {
                                 row.remove();
                                 updateTotal();
-                                       if ($(".cart-item").length === 0) {
-            $(".cart-header").after('<div class="alert alert-warning text-center fs-5 py-5 empty-message">Your cart is currently empty.</div>');
-            $(".cart-header").nextAll().not(".empty-message").remove();
-        }
 
+                                if ($(".cart-item").length === 0) {
+                                    $(".cart-header").after(`
+                                        <div class="alert-empty-cart text-center">
+                                            <div class="icon-circle mb-3">
+                                                <i class="fa fa-shopping-cart"></i>
+                                            </div>
+                                            <h4 class="fw-bold mb-2">Your Cart is Empty</h4>
+                                            <p class="mb-3">Browse products and add them to your cart.</p>
+                                            <a href="/Home/Allproduct" class="btn btn-light btn-sm px-4">
+                                                <i class="fa fa-plus me-1"></i> Start Shopping
+                                            </a>
+                                        </div>
+                                    `);
+                                    $(".cart-header").nextAll().not(".alert-empty-cart").remove();
+                                }
 
                                 Swal.fire({
                                     icon: 'success',
@@ -314,4 +396,10 @@
             });
         });
     </script>
+
+@section Scripts
+{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

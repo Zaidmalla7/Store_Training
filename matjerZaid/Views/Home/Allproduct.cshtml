@@ -12,42 +12,7 @@
         color: #111827;
     }
 
-    /* ==== HERO TITLE ==== */
-    .hero-wrapper {
-        background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
-        color: white;
-        padding: 4rem 2rem;
-        text-align: center;
-        margin-bottom: 2rem;
-        border-radius: 1rem;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-        position: relative;
-        overflow: hidden;
-    }
 
-        .hero-wrapper::after {
-            content: '';
-            position: absolute;
-            width: 150px;
-            height: 150px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 50%;
-            top: -40px;
-            right: -40px;
-        }
-
-        .hero-wrapper h1 {
-            font-size: 3rem;
-            font-weight: 800;
-            margin-bottom: 0.75rem;
-        }
-
-        .hero-wrapper p {
-            font-size: 1.25rem;
-            color: #e0e7ff;
-            max-width: 700px;
-            margin: 0 auto;
-        }
 
     /* ==== FILTER SIDEBAR ==== */
     .filter-sidebar {
@@ -278,15 +243,20 @@
 </style>
 
 <!-- HERO -->
-<div class="hero-wrapper">
-    <h1>🛍️ Welcome to Zaid's Premium Collection</h1>
-    <p>Explore the finest selection of quality products — all tailored to your lifestyle and taste.</p>
+<div class="hero-wrapper" style="background: linear-gradient(to right, #a47148, #cdb5ac); color: #fff; text-align: center; padding: 80px 20px;">
+    <h1 style="font-size: 48px; margin-bottom: 15px;">✨ All Products</h1>
+    <p style="font-size: 20px; opacity: 0.9;">Browse our complete premium collection in one place</p>
 </div>
+
+
 <form method="get">
-<!-- MAIN CONTENT -->
 <div class="ms-5 me-5 py-4">
     <div class="row">
-        <!-- FILTER SIDEBAR -->
+            <button class="btn btn-primary d-lg-none mb-5" type="button"
+                    data-bs-toggle="offcanvas" data-bs-target="#mobileFilter"
+                    aria-controls="mobileFilter">
+                <i class="fa fa-filter"></i> Filters
+            </button>
         
 
         <div class="col-lg-3">
@@ -300,7 +270,6 @@
 
 
                    
-                    <!-- Category -->
                     <div class="mb-3">
                         <label class="form-label">Category:</label>
                         <select class="form-select " name="categoryId"
@@ -309,7 +278,6 @@
                         </select>
                     </div>
 
-                    <!-- 💰 Price Range -->
                     <div class="mb-4">
                         <label class="form-label fw-semibold">Price Range</label>
                         <div class="d-flex align-items-center mb-2">
@@ -345,7 +313,6 @@
                     </div>
                 </div>
 
-                    <!-- ✅ Buttons -->
                     <div class="d-grid gap-2">
                         <button type="submit" class="btn btn-primary">Apply Filters</button>
                         <a href="@Url.Action("Allproduct", "Home")" class="btn btn-outline-secondary">Reset</a>
@@ -353,7 +320,6 @@
             </div>
         </div>
        
-        <!-- PRODUCTS -->
         <div class="col-lg-9">
             <div class="row g-4">
                 @foreach (var product in Model)
@@ -381,7 +347,7 @@
                                 </p>
 
                                 <p class="mb-3">
-                                    @if (product.DiscountPrice.HasValue)
+                                    @if (product.DiscountPrice.HasValue && product.DiscountPrice.Value != 0)
                                     {
                                         <span class="old-price">@product.Price.ToString("N2") JOD</span>
                                         <span class="new-price">@product.DiscountPrice.Value.ToString("N2") JOD</span>
@@ -391,20 +357,20 @@
                                         <span class="new-price fw-bold">@product.Price.ToString("N2") JOD</span>
                                     }
                                 </p>
-
-                                    <div class="d-flex gap-2">
-                                        <form asp-controller="CardController1" asp-action="AddToCart" method="post" class="flex-grow-1 d-flex">
-                                            <input type="hidden" name="productId" value="@product.ProductId" />
-                                            <input type="hidden" name="quantity" value="1" min="1" />
-                                            <button class="btn btn-cart w-100" type="submit">
-                                                <i class="fa fa-cart-plus"></i> Add to Cart
-                                            </button>
-                                        </form>
-                                        <button class="btn wishlist-btn px-3" title="Add to Wishlist">
+                                    <!-- Buttons -->
+                                    <div class="d-flex gap-2 mb-2">
+                                        <button type="button" class="btn btn-primary flex-grow-1 add-to-cart" data-id="@product.ProductId">
+                                            <i class="fa fa-cart-plus"></i> Add to Cart
+                                        </button>
+                                        <button type="button" class="btn wishlist-btn px-3 add-to-wishlist" data-id="@product.ProductId" title="Add to Wishlist">
                                             <i class="fa-regular fa-heart"></i>
                                         </button>
                                     </div>
-
+                                    <a asp-action="DitalsProduct" asp-controller="Home" asp-route-ProductId="@product.ProductId"
+                                       class="btn btn-outline-primary rounded d-flex align-items-center justify-content-center gap-2 px-3 py-2 shadow-sm"
+                                       style="transition: all 0.2s ease-in-out;">
+                                        <i class="fa-solid fa-eye"></i> View Details
+                                    </a>
                               
                                 <div class="mt-2">
                                     <small class="text-muted">SKU: @product.Sku</small>
@@ -418,7 +384,76 @@
     </div>
 </div>
 </form>
-<!-- Pagination -->
+<div class="offcanvas offcanvas-start" tabindex="-1" id="mobileFilter">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title">Filter Products</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body">
+        <form method="get">
+        <div class="col-lg-3">
+            <div class="filter-sidebar ">
+                <h5 class="filter-title">Filter Products</h5>
+                <div class="mb-3">
+                    <label class="form-label">Product Name or SKU:</label>
+                    <input type="text" name="searchTerm" class="form-control"
+                           placeholder="Enter product name or SKU..." value="@ViewBag.SearchTerm" />
+                </div>
+
+
+
+                <div class="mb-3">
+                    <label class="form-label">Category:</label>
+                    <select class="form-select " name="categoryId"
+                            asp-items="@(new SelectList(ViewBag.catagory, "CategoryId", "Name", ViewBag.CategoryId))">
+                        <option value="">Please Select</option>
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">Price Range</label>
+                    <div class="d-flex align-items-center mb-2">
+                        <span class="me-auto">0 JOD</span>
+                        <span id="priceValue" class="fw-bold">@ViewBag.Price</span>
+                        <span class="ms-auto">1000 JOD</span>
+                    </div>
+                    <input type="range" class="form-range" min="0" max="1000" step="1" id="priceRange" name="price" value="@ViewBag.Price" />
+                </div>
+
+
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">Average Rating</label>
+                    <div class="rating-filter">
+                        <label><input type="radio" name="rating" value="4" /> 4★ & up</label><br />
+                        <label><input type="radio" name="rating" value="3" /> 3★ & up</label><br />
+                        <label><input type="radio" name="rating" value="2" /> 2★ & up</label>
+                    </div>
+                </div>
+
+                <div class="mb-4 form-check">
+                    <input class="form-check-input" type="checkbox" id="inStock" />
+                    <label class="form-check-label fw-semibold" for="inStock">In Stock Only</label>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">Brands / Tags</label>
+                    <div class="tag-list">
+                        <span class="badge">New</span>
+                        <span class="badge">Popular</span>
+                        <span class="badge">Sale</span>
+                        <span class="badge">Exclusive</span>
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary">Apply Filters</button>
+                    <a href="@Url.Action("Allproduct", "Home")" class="btn btn-outline-secondary">Reset</a>
+                </div>
+            </div>
+        </div>
+        </form>
+    </div>
+</div>
 @if (ViewBag.TotalPages > 1)
 {
     <nav>
@@ -463,6 +498,7 @@
     </nav>
 }
 
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
 <script>
     const priceRange = document.getElementById("priceRange");
@@ -475,5 +511,113 @@
             priceValue.textContent = this.value;
         });
     }
+
+
+     $(".add-to-cart").click(function () {
+        var productId = $(this).data("id");
+
+        $.ajax({
+            url: '/CardController1/AddToCart',
+            type: 'POST',
+            data: { productId: productId, quantity: 1 },
+            success: function (res) {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'bottom-end',
+                    showConfirmButton: false,
+                    timer: 2500,
+                    timerProgressBar: true,
+                    background: res.success ? '#4CAF50' : '#F44336', // green or red
+                    color: '#fff',
+                    customClass: {
+                        popup: 'colored-toast'
+                    },
+                    didOpen: (toast) => {
+                        toast.onmouseenter = Swal.stopTimer;
+                        toast.onmouseleave = Swal.resumeTimer;
+                    }
+                });
+
+                if (res.success) {
+                    Toast.fire({
+                        icon: 'success',
+                        title: res.message
+                    });
+                } else {
+                    Toast.fire({
+                        icon: 'error',
+                        title: res.message
+                    });
+                }
+            },
+            error: function () {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'bottom-end',
+                    showConfirmButton: false,
+                    timer: 2500,
+                    timerProgressBar: true,
+                    background: '#F44336', // red
+                    color: '#fff'
+                });
+
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Something went wrong. Please try again.'
+                });
+            }
+        });
+    });
+
+
+
+    $(".add-to-wishlist").click(function () {
+        var productId = $(this).data("id");
+
+        $.ajax({
+            url: '/WishlistController1/AddToWishlist',
+            type: 'POST',
+            data: { productId: productId },
+            success: function (res) {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'bottom-end',
+                    showConfirmButton: false,
+                    timer: 2500,
+                    timerProgressBar: true,
+                    background: res.success ? '#4CAF50' : '#F44336', // green or red
+                    color: '#fff'
+                });
+
+                if (res.success) {
+                    Toast.fire({
+                        icon: 'success',
+                        title: res.message
+                    });
+                } else {
+                    Toast.fire({
+                        icon: 'error',
+                        title: res.message
+                    });
+                }
+            },
+            error: function () {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'bottom-end',
+                    showConfirmButton: false,
+                    timer: 2500,
+                    timerProgressBar: true,
+                    background: '#F44336',
+                    color: '#fff'
+                });
+
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Network error, please try again.'
+                });
+            }
+        });
+    });
 </script>
 

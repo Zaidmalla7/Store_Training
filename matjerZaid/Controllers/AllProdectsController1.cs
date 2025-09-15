@@ -1,45 +1,49 @@
 ﻿using ECApp.Data;
 using ECApp.Model.Data;
 using ECApp.Model.Database;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace ECApp.Controllers
 {
+    
+    [Route("ManagerAppController1/[controller]/[action]")]
+    [Authorize(Roles = "Admin")]
     public class AllProdectsController1 : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IWebHostEnvironment _env;
 
-        public AllProdectsController1(ApplicationDbContext context)
+       
+
+        public AllProdectsController1(ApplicationDbContext context,
+            IWebHostEnvironment env)
         {
             _context = context;
+            _env = env;
         }
        
         public async Task<ActionResult> Allprodect()
         {
-            List<Model.Data.Podects> list = new List<Model.Data.Podects>();
-            list =  (from obj in await _context.Products.ToListAsync()
-                     join cata in await _context.Categories.ToListAsync() on obj.CategoryId equals cata.CategoryId
-                     join sut in await _context.Statuses.ToListAsync() on obj.StatusId equals sut.StatusId
-                     join img in await  _context.ProductImages.Where(x => x.IsPrimary == true).ToListAsync() on obj.ProductId equals img.ProductId
-                     select new Model.Data.Podects
-                    {
-                        ProductId = obj.ProductId,
-                        Name = obj.Name,
-                        CategoryName = cata.Name,
-                        Description = obj.Description,
-                        Price = obj.Price,
-                        StatusName = sut.Name,
-                        Sku=obj.Sku,
-                        UpdatedAt = obj.UpdatedAt,
-                        DiscountPrice = obj.DiscountPrice,
-                        CreatedAt = obj.CreatedAt,
-                        Stock = obj.Stock,
-                         ImageUrl = img.ImageUrl
-                       
-                     }).ToList();
-            return View(list);
+         
+            var list1 = await _context.Products.OrderByDescending(p => p.CreatedAt).Select(p => new  Model.Data.Podects
+            {
+                ProductId = p.ProductId,
+                Name = p.Name,
+                CategoryName = p.Category.Name,
+                Description = p.Description,
+                Price = p.Price,
+                StatusName = p.Status.Name,
+                Sku=p.Sku,
+                UpdatedAt = p.UpdatedAt,
+                DiscountPrice = p.DiscountPrice,
+                CreatedAt = p.CreatedAt,
+                Stock = p.Stock,
+                ImageUrl = p.ProductImages.Where(m => m.IsPrimary).Select(m => m.ImageUrl).FirstOrDefault()
+            }).ToListAsync();
+            return View(list1);
         }
         [HttpGet]
         public async Task<ActionResult> Addprodect(global::ECApp.Model.Data.Podects podects)
@@ -75,30 +79,53 @@ namespace ECApp.Controllers
                     int newProductId = objAdd.ProductId;
 
                     // 🖼️ إضافة الصور
+                    // 🖼️ إضافة الصور
+                    // 🖼️ إضافة الصور
                     bool isFirst = true;
+
+                    // نتأكد إنو الفولدر موجود
+                    var uploadPath = Path.Combine(_env.WebRootPath, "uploads", "images");
+                    Directory.CreateDirectory(uploadPath);
+
                     foreach (var image in Images)
                     {
                         if (image.Length > 0)
                         {
-                            var fileName = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName);
-                            var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads/images", fileName);
+                            // ناخذ الامتداد
+                            var extension = Path.GetExtension(image.FileName);
 
+                            // إذا ما في امتداد، نفترضه .jpg
+                            if (string.IsNullOrWhiteSpace(extension))
+                                extension = ".jpg";
+
+                            // اسم الملف GUID + الامتداد
+                            var fileName = Guid.NewGuid().ToString() + extension;
+
+                            // المسار الكامل
+                            var path = Path.Combine(uploadPath, fileName);
+
+                            // تخزين الصورة
                             using (var stream = new FileStream(path, FileMode.Create))
                             {
                                 await image.CopyToAsync(stream);
                             }
 
+                            // تخزين بالداتا بيس
                             var productImage = new ProductImage
                             {
                                 ProductId = newProductId,
                                 ImageUrl = "/uploads/images/" + fileName,
-                                IsPrimary = isFirst
+                                IsPrimary = isFirst,
+                                CreatedAt = DateTime.Now
                             };
+
                             isFirst = false;
 
                             _context.ProductImages.Add(productImage);
                         }
                     }
+
+
 
                     objAdd.Sku = "PRD-" + Guid.NewGuid().ToString().Substring(0, 8).ToUpper();
 
@@ -120,7 +147,7 @@ namespace ECApp.Controllers
                             Note = "Auto-created by system on product creation",
                             UpdatedBy = userIdClaim?.Value
                         };
-                        _context.Inventories.Add(inv);
+                        _context.Inventory.Add(inv);
                         await _context.SaveChangesAsync();
 
                         var movement = new Inventorymovement
@@ -129,7 +156,7 @@ namespace ECApp.Controllers
                             quantity = podects.Stock ?? 0,
                             note = "Initial stock entry on product creation",
                             movementType = "in",
-                            createdAt = DateOnly.FromDateTime(DateTime.Now),
+                            createdAt = DateTime.Now,
                             createdBy = userIdClaim?.Value
                         };
                         _context.inventorymovements.Add(movement);
@@ -149,6 +176,7 @@ namespace ECApp.Controllers
                 }
             }
         }
+
 
         [HttpPost]
         public async Task<ActionResult> Delet(int Id)
@@ -180,10 +208,10 @@ namespace ECApp.Controllers
                 }
 
                 // سجل المخزون
-                var invo = await _context.Inventories.FirstOrDefaultAsync(x => x.ProductId == Id);
+                var invo = await _context.Inventory.FirstOrDefaultAsync(x => x.ProductId == Id);
                 if (invo != null)
                 {
-                    _context.Inventories.Remove(invo);
+                    _context.Inventory.Remove(invo);
                 }
 
                 // حذف المنتج
@@ -206,7 +234,7 @@ namespace ECApp.Controllers
         public async Task<ActionResult> Update(int ProductId)
         {
             //كود تشيك اذا المنتج الو سجل في جدول المخزون او لا 
-            var invo = await _context.Inventories.Where(x => x.ProductId == ProductId).FirstOrDefaultAsync();
+            var invo = await _context.Inventory.Where(x => x.ProductId == ProductId).FirstOrDefaultAsync();
             var chick = false;
             if(invo != null)
             {

@@ -29,7 +29,7 @@ namespace ECApp.Controllers
             ViewBag.dataSource = data;
 
             List<Model.Data.Podects> best = new List<Model.Data.Podects>();
-            best = (from obj in await _context.Reviews.Where(x => x.Rating > 3).ToArrayAsync()
+            best = (from obj in await _context.Reviews.Where(x => x.Rating > 2).ToArrayAsync()
                     join obj2 in await _context.Products.ToListAsync() on obj.ProductId equals obj2.ProductId
                     select new Model.Data.Podects
                     {
@@ -46,10 +46,11 @@ namespace ECApp.Controllers
                         StatusName = _context.Statuses.FirstOrDefault(s => s.StatusId == obj2.StatusId)?.Name,
                         ImageUrl = _context.ProductImages.FirstOrDefault(img => img.ProductId == obj2.ProductId && img.IsPrimary)?.ImageUrl
                     }).ToList();
-                  
-            
-           
-                    
+
+
+     
+
+
 
 
             return View(best);
@@ -130,7 +131,23 @@ namespace ECApp.Controllers
             return View(pagedProducts);
         }
 
+        public async Task<IActionResult> DitalsProduct(int ProductId)
+        {
+            if(ProductId == null)
+            {
+                return RedirectToAction("Index");
+            }
 
+            var product = await _context.Products
+                .Include(x => x.ProductImages)
+                .Include(x => x.Status)
+                .Include(x => x.Category).FirstOrDefaultAsync(x => x.ProductId == ProductId);
+            if(product == null)
+            {
+                return RedirectToAction("Index");
+            }
+            return View(product);
+        }
 
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

@@ -1,12 +1,15 @@
 ﻿using ECApp.Data;
 using ECApp.Model.Data;
 using ECApp.Model.Database;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace EUROPIECE.Controllers
 {
+    [Route("ManagerAppController1/[controller]/[action]")]
+    [Authorize(Roles = "Admin")]
     public class InventoryController1 : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -18,7 +21,7 @@ namespace EUROPIECE.Controllers
         public  async Task<IActionResult> Inventory()
         {
             List<ECApp.Model.Data.Inventory1> inventories = new List<ECApp.Model.Data.Inventory1>();
-            inventories = (from obj in await _context.Inventories.ToListAsync()
+            inventories = (from obj in await _context.Inventory.ToListAsync()
                            join obj2 in await _context.Statuses.Where(x => x.Type == "Inventory").ToListAsync() on obj.StatusId equals obj2.StatusId
                            join obj3 in _context.Users on obj.UpdatedBy equals obj3.Id
                            select new ECApp.Model.Data.Inventory1
@@ -39,7 +42,7 @@ namespace EUROPIECE.Controllers
         }
 
         public async Task<ActionResult> GetinvoById(int id) {
-            var inventory = await _context.Inventories.Where(x => x.InventoryId == id).FirstOrDefaultAsync();
+            var inventory = await _context.Inventory.Where(x => x.InventoryId == id).FirstOrDefaultAsync();
 
             if (inventory == null)
             {
@@ -56,7 +59,7 @@ namespace EUROPIECE.Controllers
 
         public async Task<ActionResult> EditInventory(Inventory1 inventory1)
         {
-            var inv = await _context.Inventories.Where(x => x.InventoryId == inventory1.InventoryId).FirstOrDefaultAsync();
+            var inv = await _context.Inventory.Where(x => x.InventoryId == inventory1.InventoryId).FirstOrDefaultAsync();
 
             if(inv == null)
             {
@@ -81,13 +84,13 @@ namespace EUROPIECE.Controllers
 
         public async Task<ActionResult> Deleted(int Id)
         {
-            var inv = await _context.Inventories.FirstOrDefaultAsync(x => x.InventoryId == Id);
+            var inv = await _context.Inventory.FirstOrDefaultAsync(x => x.InventoryId == Id);
             if (inv == null)
             {
                 return NotFound();
             }
 
-            _context.Inventories.Remove(inv);
+            _context.Inventory.Remove(inv);
             await _context.SaveChangesAsync();
 
             return Json(new { success = true });

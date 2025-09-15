@@ -18,7 +18,6 @@ namespace ECApp.Model.Data
         [Required(AllowEmptyStrings = false, ErrorMessage = "This  filed is required")]
 
         public int CategoryId { get; set; }
-        [Required(AllowEmptyStrings = false, ErrorMessage = "This  filed is required")]
 
         public decimal? DiscountPrice { get; set; }
 
@@ -30,6 +29,7 @@ namespace ECApp.Model.Data
         [Required(AllowEmptyStrings = false, ErrorMessage = "This  filed is required")]
 
         public int? StatusId { get; set; }
+
         public string? CategoryName { get; set; }
         
         public string? StatusName { get; set; }

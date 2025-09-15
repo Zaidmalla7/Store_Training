@@ -1,0 +1,271 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model List<ECApp.Model.Data.Wishlis>
+
+@{
+    ViewData["Title"] = "Wishlist";
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+
+<style>
+    .wishlist-header {
+        font-weight: 700;
+        font-size: 1.8rem;
+        border-bottom: 2px solid #eee;
+        padding-bottom: 10px;
+        margin-bottom: 25px;
+    }
+
+    .wishlist-item {
+        border-bottom: 1px solid #eaeaea;
+        padding: 20px 0;
+        transition: all 0.3s ease;
+    }
+
+        .wishlist-item img {
+            width: 90px;
+            height: 90px;
+            object-fit: cover;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+        }
+
+    .price-info del {
+        font-size: 0.9rem;
+        color: #ff5722;
+    }
+
+    .btn-red {
+        background-color: #dc3545;
+        color: white;
+        border: none;
+    }
+
+        .btn-red:hover {
+            background-color: #bb2d3b;
+        }
+
+    .alert-empty-wishlist {
+        background: #fee2e2; /* أحمر فاتح */
+        color: #991b1b; /* أحمر غامق */
+        border: 1px solid #fecaca;
+        border-radius: 12px;
+        padding: 40px 20px;
+        max-width: 500px;
+        margin: 80px auto;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+    }
+
+        .alert-empty-wishlist:hover {
+            background: #fecaca;
+        }
+
+        .alert-empty-wishlist .icon-circle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fca5a5; /* دائرة حمراء ناعمة */
+            margin: 0 auto 15px;
+            font-size: 1.8rem;
+            color: #fff;
+        }
+
+        .alert-empty-wishlist h4 {
+            font-size: 1.5rem;
+        }
+
+        .alert-empty-wishlist p {
+            color: #7f1d1d;
+            font-size: 1rem;
+        }
+
+    .wishlist-card {
+        border-radius: 0; /* كارد بدون زوايا */
+        border-left: none;
+        border-right: none;
+    }
+
+    .wishlist-container {
+        width: 100%;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        overflow: hidden;
+    }
+
+    .wishlist-item {
+        padding: 15px 20px;
+        border-bottom: 1px solid #e5e7eb;
+        background: #fff;
+        transition: background 0.2s ease-in-out;
+    }
+
+        .wishlist-item:last-child {
+            border-bottom: none;
+        }
+
+        .wishlist-item:hover {
+            background: #f9fafb;
+        }
+
+    .wishlist-img {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 1px solid #e5e7eb;
+    }
+
+    .wishlist-title {
+        font-weight: 600;
+        font-size: 1rem;
+        color: #111827;
+    }
+
+    .wishlist-price .final {
+        font-weight: 700;
+        font-size: 1rem;
+        color: #16a34a;
+        margin-right: 8px;
+    }
+
+    .wishlist-price .old {
+        font-size: 0.9rem;
+        color: #9ca3af;
+    }
+
+    .wishlist-footer {
+        padding: 15px 20px;
+        text-align: left;
+        background: #f9fafb;
+    }
+
+
+
+
+</style>
+
+<div class="container my-5">
+    <div class="wishlist-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+            <i class="fa-solid fa-heart text-danger me-2"></i> My Wishlist
+        </h5>
+        <span class="wishlist-count">@Model.Count() item@(Model.Count() > 1 ? "s" : "")</span>
+    </div>    @if (Model == null || !Model.Any())
+    {
+        <div id="empty-wishlist" class="alert-empty-wishlist text-center">
+            <div class="icon-circle mb-3">
+                <i class="fa-regular fa-heart"></i>
+            </div>
+            <h4 class="fw-bold mb-2">Your Wishlist is Empty</h4>
+            <p class="mb-3">Save the products you love and find them here later.</p>
+            <a href="@Url.Action("Allproduct", "Home")" class="btn btn-light btn-sm px-4">
+                <i class="fa fa-plus me-1"></i> Start Shopping
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="wishlist-container">
+            @foreach (var item in Model)
+            {
+                <div class="wishlist-item d-flex justify-content-between align-items-center" id="wishlist-row-@item.WishlistId">
+                    <div class="d-flex align-items-center gap-3">
+                        <img src="@item.ImageUrl" alt="@item.ProductName" class="wishlist-img" />
+                        <div>
+                            <div class="wishlist-title">@item.ProductName</div>
+                            <div class="wishlist-price">
+                                <span class="final">@item.FinalPrice.ToString("C")</span>
+                                <span class="old"><del>@item.Price.ToString("C")</del></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <a asp-action="DitalsProduct" asp-controller="Home" asp-route-ProductId="@item.ProductId" class="btn btn-outline-dark btn-sm">
+                            <i class="fa-solid fa-eye"></i> View
+                        </a>
+                        <button type="button" class="btn btn-danger btn-sm remove-btn" data-id="@item.WishlistId">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            }
+
+            <div class="wishlist-footer">
+                <a onclick="history.back()" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-1"></i> Continue Shopping
+                </a>
+            </div>
+        </div>
+    }
+</div>
+<script>
+
+        $(".remove-btn").click(function () {
+        const WishlistId = $(this).data("id");
+        const row = $(`#wishlist-row-${WishlistId}`);
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Remove this item from your wishlist?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Yes, remove it'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '/WishlistController1/RemoveFromWishlist',
+                    method: "POST",
+                    data: { id: WishlistId },
+                    success: function (res) {
+                        row.remove();
+
+                    if ($(".wishlist-item").length === 0) {
+                        $(".container").html(`
+                            <div class="alert-empty-wishlist text-center">
+                                <div class="icon-circle mb-3">
+                                    <i class="fa-regular fa-heart"></i>
+                                </div>
+                                <h4 class="fw-bold mb-2">Your Wishlist is Empty</h4>
+                                <p class="mb-3">Save the products you love and find them here later.</p>
+                                <a href="/Home/Allproduct" class="btn btn-light btn-sm px-4">
+                                    <i class="fa fa-plus me-1"></i> Start Shopping
+                                </a>
+                            </div>
+                        `);
+                    }
+
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Removed',
+                            text: 'Item was removed from your wishlist',
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Error removing item.'
+                        });
+                    }
+                });
+            }
+        });
+    });
+
+</script>

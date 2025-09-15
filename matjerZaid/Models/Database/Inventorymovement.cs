@@ -11,7 +11,7 @@ namespace ECApp.Model.Database
         public int quantity { get; set; }
         public string movementType { get; set; } = null!;
         public string? note { get; set; }
-        public DateOnly createdAt { get; set; }
+        public DateTime createdAt { get; set; }
         public string? createdBy { get; set; }
         public ApplicationUser User { get; set; }
 

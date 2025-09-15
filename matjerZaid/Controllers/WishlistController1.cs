@@ -1,22 +1,24 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using ECApp.Data;
+﻿using ECApp.Data;
 using ECApp.Model.Data;
 using ECApp.Model.Database;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace EUROPIECE.Controllers
 {
-    public class WishlistController : Controller
+    public class WishlistController1 : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public WishlistController(ApplicationDbContext context)
+        public WishlistController1(ApplicationDbContext context)
         {
             _context = context;
         }
+        [Authorize]
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Wishlist()
         {
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
             if (userIdClaim == null)
@@ -30,6 +32,7 @@ namespace EUROPIECE.Controllers
                     .ThenInclude(p => p.ProductImages)
                 .Select(w => new ECApp.Model.Data.Wishlis
                 {
+                    ProductId = w.ProductId,
                     WishlistId = w.WishlistId,
                     ProductName = w.Product.Name,
                     Price = w.Product.Price,
@@ -44,13 +47,12 @@ namespace EUROPIECE.Controllers
             return View(wishlistItems);
         }
 
-        // إضافة للمفضلة
         [HttpPost]
         public async Task<IActionResult> AddToWishlist(int productId)
         {
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
             if (userIdClaim == null)
-                return Unauthorized();
+                return Json(new { success = false, message = "User is not logged in." });
 
             var userId = userIdClaim.Value;
 
@@ -58,24 +60,27 @@ namespace EUROPIECE.Controllers
                 .AnyAsync(w => w.UserId == userId && w.ProductId == productId);
 
             if (exists)
-                return BadRequest("المنتج موجود بالفعل في المفضلة");
+                return Json(new { success = false, message = "Product already exists in your wishlist." });
 
             var product = await _context.Products.FindAsync(productId);
             if (product == null)
-                return NotFound("المنتج غير موجود");
+                return Json(new { success = false, message = "Product not found." });
 
-            var wishlistItem = new Wishlist
+            await _context.Wishlists.AddAsync(new Wishlist
             {
                 ProductId = productId,
                 UserId = userId,
                 AddedAt = DateOnly.FromDateTime(DateTime.Now)
-            };
+            });
 
-            await _context.Wishlists.AddAsync(wishlistItem);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction("Index");
+            // احسب عدد العناصر في المفضلة
+            var wishlistCount = await _context.Wishlists.CountAsync(w => w.UserId == userId);
+
+            return Json(new { success = true, message = "Product has been added to your wishlist.", count = wishlistCount });
         }
+
 
         // حذف من المفضلة
         [HttpPost]
